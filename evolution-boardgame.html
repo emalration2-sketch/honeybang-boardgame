@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>허니뱅의 우주 참교육 대모험</title>
+<style>
+  :root{
+    --bg:#12131c; --panel:#1c1f2e; --panel2:#232742; --line:#39406b;
+    --p1:#4fc3f7; --p2:#ff7676; --gold:#ffd76b;
+    --power:#ff4d6d; --power2:#ff8fa3;
+    --energy:#3aa0ff; --energy2:#7fc4ff;
+    --text:#eef0ff; --dim:#8b90b3; --danger:#ff5470; --good:#39d98a;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  body{
+    margin:0; font-family:'Segoe UI',Pretendard,sans-serif; background:radial-gradient(circle at 50% 0%,#1a1d2e,#0b0c14 70%);
+    color:var(--text); min-height:100vh; padding:20px; font-size:15px;
+    -webkit-user-select:none; user-select:none;
+    padding-left:calc(20px + env(safe-area-inset-left));
+    padding-right:calc(20px + env(safe-area-inset-right));
+    padding-bottom:calc(20px + env(safe-area-inset-bottom));
+  }
+  button{ cursor:pointer; touch-action:manipulation; -webkit-touch-callout:none; border-radius:9px; padding:11px 18px; font-size:14px; font-weight:600; background:var(--panel2); color:var(--text); border:1px solid var(--line); }
+  button:hover:not(:disabled){ background:#2c3155; }
+  button:disabled{ opacity:.35; cursor:not-allowed; }
+  button.primary{ background:linear-gradient(135deg,#ffd76b,#ff9f4a); color:#221400; border:none;}
+  button.danger{ background:linear-gradient(135deg,#ff5470,#c0355a); color:#fff; border:none;}
+  h1{ text-align:center; font-size:26px; letter-spacing:1px; margin:4px 0 18px; color:var(--gold); text-shadow:0 0 16px rgba(255,215,107,.45); animation:titleGlow 3s ease-in-out infinite; }
+  @keyframes titleGlow{ 0%,100%{ text-shadow:0 0 16px rgba(255,215,107,.45);} 50%{ text-shadow:0 0 28px rgba(255,215,107,.8), 0 0 8px rgba(255,255,255,.4);} }
+  .app{ display:flex; gap:20px; max-width:1900px; margin:0 auto; align-items:flex-start; }
+  .side{ width:230px; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; flex-shrink:0; }
+  #panel-p2{ order:3; }
+  .center{ flex:1; order:2; display:flex; flex-direction:column; gap:14px; min-width:0;}
+  .avatar-box{ text-align:center; margin-bottom:8px; }
+  .avatar{ font-size:54px; line-height:1; filter:drop-shadow(0 0 14px currentColor); transition:.3s; display:inline-block;}
+  .avatar.stage2{ transform:scale(1.1); }
+  .avatar.stage3{ transform:scale(1.22); filter:drop-shadow(0 0 22px currentColor) drop-shadow(0 0 34px var(--gold)); }
+  .p1 .avatar{ color:var(--p1); } .p2 .avatar{ color:var(--p2); }
+  .pname{ font-weight:700; margin-top:6px; font-size:14px; }
+  .stage-tag{ font-size:10.5px; color:var(--dim); background:#00000033; display:inline-block; padding:3px 8px; border-radius:10px; margin-top:4px;}
+  .active-turn{ animation:turnGlow 1.6s ease-in-out infinite; }
+  @keyframes turnGlow{ 0%,100%{ box-shadow:0 0 0 3px var(--gold), 0 0 22px rgba(255,215,107,.35);} 50%{ box-shadow:0 0 0 3px var(--gold), 0 0 36px rgba(255,215,107,.65);} }
+  .stat-row{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--dim); margin:9px 0 3px; font-weight:600; }
+  .tower{ position:relative; display:flex; flex-wrap:wrap-reverse; align-content:flex-start; gap:3px; min-height:26px; border-radius:10px; padding:6px; cursor:default;}
+  .tower.power{ background:linear-gradient(180deg,#2a0e16,#1c0a10); border:1px solid #5c1c2c; }
+  .tower.energy{ background:linear-gradient(180deg,#0c1f33,#0a1522); border:1px solid #1c4c74; }
+  .block{ width:15px; height:15px; border-radius:4px; }
+  .block.power{ background:linear-gradient(135deg,var(--power),var(--power2)); box-shadow:0 0 8px var(--power);}
+  .block.energy{ background:linear-gradient(135deg,var(--energy),var(--energy2)); box-shadow:0 0 8px var(--energy);}
+  .block.empty{ background:#ffffff10; }
+  .block.locked{ background:repeating-linear-gradient(45deg,#00000040,#00000040 4px,#00000015 4px,#00000015 8px); border:1px dashed #ffffff18; opacity:.5; }
+  .gold-line{ position:relative; font-size:14px; margin-top:9px; color:var(--gold); font-weight:700;}
+  .skills-title{ position:relative; font-size:11px; color:var(--dim); margin-top:10px; font-weight:600; letter-spacing:.5px; cursor:default; display:inline-block;}
+  .skill-slots{ display:flex; gap:5px; flex-wrap:wrap; margin-top:5px;}
+  .skill-chip{ position:relative; font-size:10px; background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:7px 5px; display:flex; flex-direction:column; align-items:center; width:60px; cursor:default;}
+  .skill-chip b{ font-size:10.5px; margin-top:2px;}
+  .skill-chip .ico{ font-size:17px; }
+  .skill-slot.empty{ width:60px; height:40px; border:1px dashed #ffffff20; border-radius:8px; }
+  .tip{ position:absolute; bottom:100%; left:50%; transform:translateX(-50%); margin-bottom:8px; background:#05060c; border:1px solid var(--line); color:var(--text); font-size:11px; line-height:1.5; padding:8px 10px; border-radius:10px; width:210px; text-align:center; opacity:0; visibility:hidden; transition:opacity .15s; pointer-events:none; z-index:200; box-shadow:0 6px 18px rgba(0,0,0,.55);}
+  .tile.top-row .tip{ bottom:auto; top:100%; margin-bottom:0; margin-top:8px; }
+  .tile.edge-left .tip{ left:0; transform:none; }
+  .tile.edge-right .tip{ left:auto; right:0; transform:none; }
+  .skill-chip:hover .tip, .tile:hover .tip, .tower:hover .tip, .skills-title:hover .tip, .codex-btn:hover .tip,
+  .skill-chip.show-tip .tip, .tile.show-tip .tip, .tower.show-tip .tip, .skills-title.show-tip .tip, .codex-btn.show-tip .tip{ opacity:1; visibility:visible; }
+  #board-wrap{ position:relative; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px; overflow:visible; }
+  #board{ display:grid; gap:8px; margin:0 auto; transition:transform .1s; position:relative; }
+  .board-shake{ animation: bigShake .5s ease; }
+  @keyframes bigShake{ 0%,100%{transform:translate(0,0);} 10%{transform:translate(-10px,4px);} 20%{transform:translate(10px,-4px);} 30%{transform:translate(-8px,6px);} 40%{transform:translate(8px,-6px);} 50%{transform:translate(-6px,3px);} 60%{transform:translate(6px,-3px);} 70%{transform:translate(-4px,2px);} 80%{transform:translate(4px,-2px);} 90%{transform:translate(-2px,1px);} }
+  .tile{ position:relative; background:var(--panel2); border:1px solid var(--line); border-radius:9px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:19px; -webkit-touch-callout:none; touch-action:manipulation; }
+  .tile .tlabel{ font-size:8px; color:var(--dim); position:absolute; bottom:3px; text-align:center; padding:0 3px;}
+  .tile.temple{ border-color:var(--gold); box-shadow:0 0 18px rgba(255,215,107,.3); background:linear-gradient(160deg,#2a2210,#1c1f2e); }
+  .tile.mzone{ border-color:#5a8a3a; background:linear-gradient(160deg,#1a2414,#1c1f2e); }
+  .tile.village{ border-color:#9a7a3a; background:linear-gradient(160deg,#241f14,#1c1f2e); }
+  @keyframes landedPulse{ 0%{box-shadow:0 0 0 0 rgba(255,215,107,.9);} 100%{box-shadow:0 0 24px 10px rgba(255,215,107,0);} }
+  .tile.landed-flash{ animation: landedPulse .7s ease-out; }
+  .token{ position:absolute; top:-7px; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; border:2px solid; background:#0c0d14; z-index:10; transition:.18s;}
+  .token.tok-p1{ left:-7px; border-color:var(--p1); color:var(--p1); box-shadow:0 0 10px var(--p1);}
+  .token.tok-p2{ right:-7px; border-color:var(--p2); color:var(--p2); box-shadow:0 0 10px var(--p2);}
+  .token.stage2{ box-shadow:0 0 12px 2px currentColor; }
+  .token.stage3{ border-color:var(--gold); box-shadow:0 0 16px 4px var(--gold); }
+  .ship-deco{ pointer-events:none; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:.1; animation: shipPulse 4.5s ease-in-out infinite; }
+  .ship-deco .si{ font-size:min(5vw, 50px); filter: drop-shadow(0 0 20px var(--gold)); }
+  @keyframes shipPulse{ 0%,100%{opacity:.08;} 50%{opacity:.16;} }
+  #controls{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px; min-height:120px; }
+  .controls-flex{ display:flex; gap:14px; align-items:flex-start; }
+  .controls-main{ flex:1; min-width:0; }
+  .controls-codex{ display:flex; flex-direction:column; gap:8px; width:140px; flex-shrink:0; }
+  .codex-btn{ position:relative; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:14px 8px; text-align:center; font-size:12px; font-weight:700; cursor:default; }
+  .codex-btn:hover{ border-color:var(--gold); }
+  .codex-tip{ left:auto; right:0; transform:none; bottom:100%; margin-bottom:8px; width:320px; text-align:left; font-size:12px; line-height:1.7; }
+  #log{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:12px 16px; height:130px; overflow-y:auto; font-size:13px; color:var(--dim); }
+  #log div{ margin:3px 0; }
+  .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
+  .msg-turn{ font-weight:700; color:var(--gold); font-size:16px; margin-bottom:4px;}
+  .thinking{ color:var(--p2); font-style:italic; margin-top:6px;}
+  #overlay{ position:fixed; inset:0; background:#000000cc; display:none; align-items:center; justify-content:center; z-index:9999; padding:20px; }
+  #overlay .card{ background:var(--panel); border:2px solid var(--gold); border-radius:20px; padding:40px 50px; text-align:center; box-shadow:0 0 70px rgba(255,215,107,.5); max-width:94vw; max-height:90vh; overflow-y:auto; }
+  #overlay .card.victory-glow{ animation:victoryPulse 1.4s ease-in-out infinite; }
+  @keyframes victoryPulse{ 0%,100%{ box-shadow:0 0 50px rgba(255,215,107,.5);} 50%{ box-shadow:0 0 90px rgba(255,215,107,.9);} }
+  #overlay h2{ font-size:28px; color:var(--gold); margin:0 0 12px; }
+  .char-grid{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:14px; max-width:560px; }
+  .char-card{ background:var(--panel2); border:2px solid var(--line); border-radius:16px; padding:14px 16px; cursor:pointer; transition:.15s; text-align:center; width:120px;}
+  .char-card:hover{ border-color:var(--gold); transform:translateY(-4px); box-shadow:0 8px 24px rgba(255,215,107,.25); }
+  .char-card .cico{ font-size:44px; }
+  .char-card .cname{ font-weight:700; margin-top:6px; font-size:12px; }
+  .char-card .cdesc{ font-size:10px; color:var(--dim); margin-top:3px; }
+  .encounter-box{ background:#00000030; border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-top:8px; font-size:14px;}
+  .float-fx{ position:absolute; top:-6px; left:50%; transform:translateX(-50%); font-weight:800; font-size:14px; pointer-events:none; animation:floatUp 1s ease-out forwards; z-index:60; white-space:nowrap;}
+  .float-fx.pos{ color:var(--good); text-shadow:0 0 6px var(--good);}
+  .float-fx.neg{ color:var(--danger); text-shadow:0 0 6px var(--danger);}
+  @keyframes floatUp{ 0%{ transform:translate(-50%,0); opacity:1;} 100%{ transform:translate(-50%,-38px); opacity:0;} }
+  .shop-item{ background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:10px; display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; font-size:13px; gap:8px;}
+  .badge{ font-size:11px; padding:2px 7px; border-radius:7px; background:#00000040; }
+
+  .board-popup{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .2s; z-index:45; background:rgba(0,0,0,0.4); border-radius:16px;}
+  .board-popup.show{ opacity:1; pointer-events:auto; }
+  .popup-card{ background:#05060cf2; border:2px solid var(--gold); border-radius:16px; padding:20px 30px; text-align:center; font-weight:700; font-size:16px; box-shadow:0 10px 34px rgba(0,0,0,.6); min-width:220px; color:var(--text); transition:box-shadow .3s;}
+  .popup-card.double-flash{ box-shadow:0 0 50px rgba(255,215,107,.85); }
+  .dice-title{ font-size:13px; color:var(--dim); margin-bottom:8px; font-weight:600;}
+  .dice-pair{ display:flex; gap:14px; justify-content:center; }
+  .dice-face-lg{ font-size:56px; line-height:1; }
+  .dice-face-lg.rolling{ animation:tumble .22s linear infinite; }
+  @keyframes tumble{ 0%{transform:rotate(0deg) translateY(0);} 25%{transform:rotate(90deg) translateY(-12px);} 50%{transform:rotate(180deg) translateY(0);} 75%{transform:rotate(270deg) translateY(-12px);} 100%{transform:rotate(360deg) translateY(0);} }
+  .dice-face-lg.settle{ animation:settlePop .45s ease; }
+  @keyframes settlePop{ 0%{transform:scale(1.5) rotate(0deg);} 60%{transform:scale(0.85);} 100%{transform:scale(1);} }
+  .double-tag{ margin-top:10px; font-weight:800; color:var(--gold); font-size:15px; animation:pulseTag .5s ease-in-out infinite; }
+  @keyframes pulseTag{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.15);} }
+  .battle-vs{ display:flex; align-items:center; gap:20px; justify-content:center; }
+  .battler{ display:flex; flex-direction:column; align-items:center; font-size:44px; }
+  .battler .bp{ font-size:16px; margin-top:6px; font-weight:800; }
+  .battler .bn{ font-size:10px; color:var(--dim); margin-top:2px; max-width:100px; }
+  .clash{ font-size:32px; animation:clashPulse .3s ease-in-out infinite; }
+  @keyframes clashPulse{ 0%,100%{transform:scale(1) rotate(0deg);} 50%{transform:scale(1.4) rotate(-20deg);} }
+  .clash-msg{ font-size:13px; color:var(--gold); font-weight:800; margin-top:8px; animation:pulseTag .35s ease-in-out infinite; }
+  .battle-shake{ animation:shake .08s linear infinite; }
+  @keyframes shake{ 0%{transform:translate(0,0);} 25%{transform:translate(-6px,4px);} 50%{transform:translate(6px,-4px);} 75%{transform:translate(-5px,-5px);} 100%{transform:translate(5px,5px);} }
+  .result{ font-size:24px; }
+  .result.win{ color:var(--good); text-shadow:0 0 14px var(--good);}
+  .result.lose{ color:var(--danger); text-shadow:0 0 14px var(--danger);}
+</style>
+</head>
+<body>
+<h1>⚔️ 허니뱅의 우주 참교육 대모험 ⚔️</h1>
+<div class="app">
+  <div class="side" id="panel-p1"></div>
+  <div class="center">
+    <div id="board-wrap">
+      <div id="board"></div>
+      <div id="board-popup" class="board-popup"><div class="popup-card" id="popup-card"></div></div>
+    </div>
+    <div id="controls"></div>
+    <div id="log"></div>
+  </div>
+  <div class="side" id="panel-p2"></div>
+</div>
+<div id="overlay"><div class="card" id="overlay-card"></div></div>
+
+<script>
+/* ---------------- Pacing ---------------- */
+const PACE = 1.2;
+function wait(ms){ return new Promise(res=>setTimeout(res, ms*PACE)); }
+function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+/* ---------------- Board graph (11 x 5 rectangle) ---------------- */
+const W = 11, H = 5;
+const FINAL_BOSS_POWER = 12;
+const VILLAGE_TYPES = ['itemshop','shop','energy','gold'];
+
+function perimeterCoordsRect(w,h){
+  const coords=[];
+  for(let c=0;c<w;c++) coords.push([0,c]);
+  for(let r=1;r<h;r++) coords.push([r,w-1]);
+  for(let c=w-2;c>=0;c--) coords.push([h-1,c]);
+  for(let r=h-2;r>=1;r--) coords.push([r,0]);
+  return coords;
+}
+const COORDS = perimeterCoordsRect(W,H);
+const TOTAL_TILES = COORDS.length; // 28
+
+/* 몬스터존 = 다람쥐,까마귀,늑대,보스전투(한 묶음) / 마을 = 아이템상점,스킬상점,벌꿀,럭키클로버
+   전체 배치: [출발] [신전] [몬스터존1] [차원문,트랩] [마을1] [벌꿀,트랩]
+              [몬스터존2] [차원문,트랩] [마을2] [럭키클로버,트랩,벌꿀] [신전]
+   차원문은 전체 보드에 2개만 존재하며, 트랩은 4개로 조정됨 */
+const PERIMETER_DEFS = [
+  {t:'start', label:'출발', icon:'🏁'},
+  {t:'temple', label:'아틀란티스 신전', icon:'🏛️'},
+  {t:'monster', label:'폭주 다람쥐', icon:'🐿️', power:1, gold:20},
+  {t:'monster', label:'폭주 까마귀', icon:'🐦‍⬛', power:2, gold:30},
+  {t:'monster', label:'폭주 늑대', icon:'🐺', power:3, gold:40},
+  {t:'boss', label:'보스전투', icon:'👑'},
+  {t:'portal', label:'차원문', icon:'🌀'},
+  {t:'trap', label:'트랩', icon:'🪤'},
+  {t:'itemshop', label:'아이템 상점', icon:'🛍️'},
+  {t:'shop', label:'스킬 상점', icon:'🥋'},
+  {t:'energy', label:'벌꿀', icon:'🍯'},
+  {t:'gold', label:'럭키 클로버', icon:'🍀'},
+  {t:'energy', label:'벌꿀', icon:'🍯'},
+  {t:'trap', label:'트랩', icon:'🪤'},
+  {t:'monster', label:'폭주 다람쥐', icon:'🐿️', power:1, gold:20},
+  {t:'monster', label:'폭주 까마귀', icon:'🐦‍⬛', power:2, gold:30},
+  {t:'monster', label:'폭주 늑대', icon:'🐺', power:3, gold:40},
+  {t:'boss', label:'보스전투', icon:'👑'},
+  {t:'portal', label:'차원문', icon:'🌀'},
+  {t:'trap', label:'트랩', icon:'🪤'},
+  {t:'itemshop', label:'아이템 상점', icon:'🛍️'},
+  {t:'shop', label:'스킬 상점', icon:'🥋'},
+  {t:'energy', label:'벌꿀', icon:'🍯'},
+  {t:'gold', label:'럭키 클로버', icon:'🍀'},
+  {t:'gold', label:'럭키 클로버', icon:'🍀'},
+  {t:'trap', label:'트랩', icon:'🪤'},
+  {t:'energy', label:'벌꿀', icon:'🍯'},
+  {t:'temple', label:'아틀란티스 신전', icon:'🏛️'},
+];
+
+const NODEMAP = {};
+PERIMETER_DEFS.forEach((d,i)=>{
+  const id = 'P'+i;
+  const [row,col] = COORDS[i];
+  NODEMAP[id] = {id, row, col, ...d,
+    perimeterPrev:'P'+((i-1+TOTAL_TILES)%TOTAL_TILES), perimeterNext:'P'+((i+1)%TOTAL_TILES)};
+});
+const PORTAL_IDS = Object.values(NODEMAP).filter(n=>n.t==='portal').map(n=>n.id);
+
+const TIP_BY_TYPE = {
+  start:   '이 칸을 지나가거나 도착하면 에너지 +1 회복',
+  energy:  '에너지 +2 즉시 충전 (진화 단계별 최대치까지)',
+  gold:    '주사위 값 × 10 골드 획득',
+  trap:    '골드 10% 손실 + 에너지 1 손실 동시 적용',
+  portal:  '이 칸에 정확히 멈추면 다른 차원문으로 즉시 이동 (지나가기만 하면 발동하지 않음)',
+  temple:  '3단계 진화자만 진입 가능\n디스트로이어 오리온(파워 12)에게 도전\n\n성공 시 게임 승리!',
+};
+
+/* ---------------- Characters ---------------- */
+const CHARACTERS = {
+  badger:   { name:'허니뱅', full:'벌꿀오소리 허니뱅', base:'🦡', desc:'우주 벌꿀을 쫓는 포악한 탐험가' },
+  robot:    { name:'메카닉 로봇', full:'아크메카 병기', base:'🤖', desc:'고대 외계 병기 유닛' },
+  lion:     { name:'바코드 라이언', full:'참교육당한 前 백수의 왕', base:'🦁', desc:'탈모가 온 사자' },
+  penguin:  { name:'카이저 핑', full:'몰락한 남극 독재자', base:'🐧', desc:'메카 슈트 펭귄' },
+  whale:    { name:'메가 블록 고래', full:'심해의 거대 셔틀', base:'🐋', desc:'철갑 피부의 고래' },
+  kangaroo: { name:'크러셔 루', full:'네온 시티의 전 조폭', base:'🦘', desc:'음속 펀치 캥거루' },
+  cat:      { name:'고양이 예언자', full:'파르테논의 몰락한 신', base:'🐱', desc:'레이저 눈 고양이' },
+  dragon:   { name:'스파크-렉스', full:'이빨 빠진 철갑 도마뱀', base:'🐉', desc:'참교육당한 메카 드래곤' },
+};
+function evolutionBadge(stage){
+  if(stage===2) return '💢';
+  if(stage===3) return '🔥👑';
+  return '';
+}
+function avatarFor(player){
+  const ch = CHARACTERS[player.character] || CHARACTERS.badger;
+  const badge = evolutionBadge(player.evolutionStage);
+  return badge ? `${ch.base}${badge}` : ch.base;
+}
+function avatarToken(player){
+  const ch = CHARACTERS[player.character] || CHARACTERS.badger;
+  return ch.base;
+}
+
+/* ---------------- Skills ---------------- */
+const SKILL_DB = [
+  {id:'break',   name:'한계 돌파', cost:2, gold:0, kind:'combat',  desc:'전투 시 파워 +3 (필요할 때 자동 발동)', icon:'💥'},
+  {id:'drain',   name:'에너지 드레인', cost:1, gold:0, kind:'pvp',     desc:'PvP 승리 시 상대 에너지 1 추가 약탈 (자동 발동)', icon:'🩸'},
+  {id:'meditate',name:'명상',     cost:0, gold:30,kind:'recover', desc:'30G를 지불하고 에너지 +2', icon:'🧘'},
+  {id:'haste',   name:'축지법',   cost:1, gold:0, kind:'move',    desc:'이번 턴 주사위 이동거리 2배', icon:'👟'},
+  {id:'hook',    name:'갈고리 사슬', cost:2, gold:0, kind:'pvp',   desc:'4칸 이내 상대를 끌어와 강제 PvP', icon:'⛓️'},
+  {id:'key',     name:'중앙 열쇠', cost:3, gold:0, kind:'boss',    desc:'최종 보스 파워 -2 (보유 시 자동 발동)', icon:'🗝️'},
+];
+const skillById = id => SKILL_DB.find(s=>s.id===id);
+function priceOf(skill){ return 40 + skill.cost*15; }
+
+/* ---------------- Items ---------------- */
+const ITEM_DB = [
+  {id:'potion',    name:'파워 물약',     icon:'🧪', price:80, desc:'즉시 파워 +1 (영구 증가)'},
+  {id:'capsule',   name:'에너지 캡슐',   icon:'⚡', price:40, desc:'즉시 에너지 +3 충전'},
+  {id:'shield',    name:'보호막',        icon:'🛡️', price:60, desc:'장착 후 다음 전투 패배 피해를 무효화'},
+  {id:'luckydice', name:'행운의 주사위', icon:'🎯', price:90, desc:'다음 주사위를 6+6으로 고정'},
+  {id:'charm',     name:'순간이동 부적', icon:'🌀', price:70, desc:'즉시 3칸 앞으로 이동'},
+];
+const itemById = id => ITEM_DB.find(i=>i.id===id);
+function maxItemsFor(player){ return player.evolutionStage; }
+
+function shopTipBody(type){
+  if(type==='shop') return SKILL_DB.map(s=>`${s.icon} ${s.name} - ${priceOf(s)}G`).join('<br>');
+  if(type==='itemshop') return `💎 파워 토큰 - 100G<br>💧 에너지 충전 - 30G<br>` + ITEM_DB.map(i=>`${i.icon} ${i.name} - ${i.price}G`).join('<br>');
+  return null;
+}
+
+/* ---------------- Boss roster (weighted random) & final ---------------- */
+const BOSS_POOL = [
+  {name:'메카 전갈', icon:'🦂', power:5, gold:100, chance:40},
+  {name:'폭주 코뿔소 대장', icon:'🦏', power:7, gold:150, chance:30},
+  {name:'심연 상어', icon:'🦈', power:9, gold:200, chance:20},
+  {name:'메카 히드라', icon:'🐍', power:11, gold:280, chance:10},
+];
+const ORION = {name:'디스트로이어 오리온', icon:'👾', power:FINAL_BOSS_POWER, gold:0};
+
+function weightedBossPick(){
+  const r = Math.random()*100;
+  let acc=0;
+  for(const b of BOSS_POOL){ acc+=b.chance; if(r<=acc) return b; }
+  return BOSS_POOL[BOSS_POOL.length-1];
+}
+function generateEncounter(type){
+  if(type==='boss'){
+    const b = weightedBossPick();
+    return {name:b.name, icon:b.icon, power:b.power, gold:b.gold, tier:'boss'};
+  }
+  return {name:ORION.name, icon:ORION.icon, power:ORION.power, gold:0, tier:'final'};
+}
+function tileTip(node){
+  if(node.t==='monster'){
+    return `파워 ${node.power} — 보상 ${node.gold}G<br>내 파워가 같거나 높으면 자동 전투`;
+  }
+  if(node.t==='boss'){
+    return `내 파워가 높으면 자동 승리<br>승리 시 랜덤 스킬 획득!<br><br>` +
+      BOSS_POOL.map(b=>`${b.icon} ${b.name}(파워${b.power})<br>(보상 ${b.gold}G, 등장확률 ${b.chance}%)`).join('<br><br>');
+  }
+  const shopBody = shopTipBody(node.t);
+  if(shopBody) return shopBody;
+  return (TIP_BY_TYPE[node.t]||'').split('\n').join('<br>');
+}
+
+/* ---------------- State ---------------- */
+function newPlayer(id,name,isAI){
+  return {
+    id,name,isAI, character:null,
+    position:'P0', prevPosition:null, evolutionStage:1,
+    power:0, energy:2, gold:50,
+    skillSlots:2, skills:[], items:[],
+    shieldArmed:false, luckyDiceArmed:false,
+  };
+}
+let state = {
+  players:[newPlayer(1,'Player 1',false), newPlayer(2,'AI Rival',true)],
+  turn:0,
+  phase:'ROLL',
+  logHistory:[],
+  gameOver:false,
+  started:false,
+  pendingShop:null,
+  encounter:null,
+  hasteActive:false,
+  animating:false,
+  lastDice:null,
+  lastDicePair:null,
+  lastRollWasDouble:false,
+  doublesInARow:0,
+  fxQueue:[],
+};
+
+function log(msg){
+  state.logHistory.unshift(msg);
+  if(state.logHistory.length>60) state.logHistory.pop();
+}
+function other(p){ return state.players[1-state.players.indexOf(p)]; }
+function curTile(player){ return NODEMAP[player.position]; }
+function dist(aId,bId){
+  const a=parseInt(aId.slice(1)), b=parseInt(bId.slice(1));
+  const d=Math.abs(a-b);
+  return Math.min(d,TOTAL_TILES-d);
+}
+function retreat(player){
+  player.position = player.prevPosition;
+}
+function maxEnergyFor(player){
+  return player.evolutionStage===1?2:player.evolutionStage===2?4:6;
+}
+
+/* ---------------- Resource helpers (with gain/loss fx) ---------------- */
+function fx(playerId, stat, amount){ if(amount!==0) state.fxQueue.push({playerId,stat,amount}); }
+function addGold(player, amt){ const before=player.gold; player.gold=Math.max(0, player.gold+amt); fx(player.id,'gold',player.gold-before); }
+function addEnergy(player, amt){ const before=player.energy; const cap=maxEnergyFor(player); player.energy=Math.min(cap, Math.max(0, player.energy+amt)); fx(player.id,'energy',player.energy-before); }
+function addPower(player, amt){ player.power=Math.max(0, player.power+amt); fx(player.id,'power',amt); updateEvolution(player); }
+
+/* ---------------- Evolution ---------------- */
+function stageFromPower(p){ if(p>=8) return 3; if(p>=4) return 2; return 1; }
+function slotsForStage(s){ return s===1?2:s===2?3:4; }
+function updateEvolution(p){
+  const ns = stageFromPower(p.power);
+  if(ns!==p.evolutionStage){
+    p.evolutionStage = ns;
+    p.skillSlots = slotsForStage(ns);
+    log(`✨ ${p.name}이(가) 진화 ${ns}단계로 진화했습니다! (에너지·아이템 슬롯 확장)`);
+    showPopup(`✨ <b>${p.name}</b>이(가) 진화 <b>${ns}단계</b>로 진화했습니다!`, 1400);
+  }
+}
+
+/* ---------------- Center popup system ---------------- */
+let popupTimer=null;
+function showPopup(html, duration=1100){
+  const wrap = document.getElementById('board-popup');
+  const card = document.getElementById('popup-card');
+  card.className='popup-card';
+  card.innerHTML = html;
+  wrap.classList.add('show');
+  clearTimeout(popupTimer);
+  if(duration>0){ popupTimer=setTimeout(()=>wrap.classList.remove('show'), duration*PACE); }
+}
+
+async function animateDiceRoll(player, forceLucky){
+  const wrap = document.getElementById('board-popup');
+  const card = document.getElementById('popup-card');
+  clearTimeout(popupTimer);
+  card.className='popup-card';
+  card.innerHTML = `<div class="dice-title">${player.name}의 주사위</div><div class="dice-pair"><div class="dice-face-lg rolling" id="die1">🎲</div><div class="dice-face-lg rolling" id="die2">🎲</div></div>`;
+  wrap.classList.add('show');
+  const faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+  const el1=card.querySelector('#die1'), el2=card.querySelector('#die2');
+  for(let i=0;i<10;i++){
+    el1.textContent = faces[rand(0,5)];
+    el2.textContent = faces[rand(0,5)];
+    await wait(55+i*9);
+  }
+  let d1,d2;
+  if(forceLucky){ d1=6; d2=6; } else { d1=rand(1,6); d2=rand(1,6); }
+  el1.textContent=faces[d1-1]; el2.textContent=faces[d2-1];
+  el1.classList.remove('rolling'); el2.classList.remove('rolling');
+  el1.classList.add('settle'); el2.classList.add('settle');
+  await wait(400);
+  if(d1===d2){
+    card.classList.add('double-flash');
+    const tag=document.createElement('div');
+    tag.className='double-tag';
+    tag.textContent='✨ 더블! 한 번 더! ✨';
+    card.appendChild(tag);
+    await wait(650);
+  } else {
+    card.innerHTML = `<div class="dice-title">${player.name}의 주사위</div><div class="dice-face-lg settle">${d1+d2}</div>`;
+    await wait(500);
+  }
+  wrap.classList.remove('show');
+  return [d1,d2];
+}
+
+async function showBattleAnimation(player, defenderIcon, atkPower, defPower, win, defenderName){
+  const wrap = document.getElementById('board-popup');
+  const card = document.getElementById('popup-card');
+  clearTimeout(popupTimer);
+  card.className = 'popup-card';
+  card.innerHTML = `<div class="battle-vs">
+      <div class="battler">${avatarFor(player)}<div class="bp" style="color:var(--energy)">${atkPower}</div></div>
+      <div class="clash">⚔️</div>
+      <div class="battler">${defenderIcon}<div class="bp" style="color:var(--power)">${defPower}</div>${defenderName?`<div class="bn">${defenderName}</div>`:''}</div>
+    </div><div class="clash-msg" id="clash-msg">⚔️ 격돌!</div>`;
+  wrap.classList.add('show');
+  card.classList.add('battle-shake');
+  const msgs = ['⚔️ 격돌!','💥 참교육 개시!','🔥 전력 질주!'];
+  const msgEl = card.querySelector('#clash-msg');
+  for(let i=0;i<msgs.length;i++){
+    if(msgEl) msgEl.textContent = msgs[i];
+    await wait(320);
+  }
+  card.classList.remove('battle-shake');
+  card.innerHTML = win ? `<div class="result win">🏆 승리!</div>` : `<div class="result lose">💀 패배...</div>`;
+  await wait(750);
+  wrap.classList.remove('show');
+}
+
+async function triggerChaosRecall(){
+  const boardWrap = document.getElementById('board-wrap');
+  boardWrap.classList.add('board-shake');
+  showPopup(`💥 <b>3연속 더블!</b><br>모든 플레이어가 출발로 강제 소환됩니다!`, 1800);
+  setTimeout(()=>boardWrap.classList.remove('board-shake'), 500*PACE);
+  await wait(1800);
+  state.players.forEach(p=>{ p.prevPosition = p.position; p.position='P0'; });
+  render();
+}
+
+function askPortalPopup(player, currentId){
+  const others = PORTAL_IDS.filter(id=>id!==currentId);
+  if(others.length<=1) return Promise.resolve(others[0]); // 포탈이 2개뿐이면 목적지가 하나로 고정되므로 바로 이동
+  const labels = ['A','B','C','D'];
+  return new Promise(resolve=>{
+    const wrap = document.getElementById('board-popup');
+    const card = document.getElementById('popup-card');
+    clearTimeout(popupTimer);
+    card.className = 'popup-card';
+    card.innerHTML = `<div style="margin-bottom:12px;">🌀 <b>${player.name}</b>: 어느 차원문으로 이동할까요?</div>
+      <div class="row">
+        ${others.map((id,i)=>`<button class="primary" id="portal-btn-${i}">🌀 차원문 ${labels[i]}</button>`).join('')}
+      </div>`;
+    wrap.classList.add('show');
+    others.forEach((id,i)=>{
+      document.getElementById(`portal-btn-${i}`).onclick=()=>{ wrap.classList.remove('show'); resolve(id); };
+    });
+  });
+}
+async function aiPickPortal(player, currentId){
+  const others = PORTAL_IDS.filter(id=>id!==currentId);
+  const choice = others[rand(0,others.length-1)];
+  showPopup(`🤖 <b>${player.name}</b>: 차원문 이동!`, 900);
+  await wait(700);
+  return choice;
+}
+
+/* ---------------- Combat ---------------- */
+function consumeCombatSkillIfBeneficial(player, targetPower){
+  const idx = player.skills.findIndex(s=>s.id==='break');
+  if(idx>=0 && player.energy>=2){
+    const wouldLoseWithout = !(player.power > targetPower);
+    const wouldWinWith = (player.power+3) > targetPower;
+    if(wouldLoseWithout && wouldWinWith){
+      addEnergy(player,-2);
+      player.skills.splice(idx,1);
+      log(`💥 ${player.name}이(가) '한계 돌파'를 사용! 파워 +3`);
+      showPopup(`💥 <b>${player.name}</b>: 한계 돌파! 파워 +3`, 900);
+      return 3;
+    }
+  }
+  return 0;
+}
+function grantRandomSkill(player, reason){
+  if(player.skills.length >= player.skillSlots){
+    log(`(${player.name}의 스킬 슬롯이 가득 차 스킬을 획득하지 못했습니다)`);
+    return;
+  }
+  const owned = new Set(player.skills.map(s=>s.id));
+  const pool = SKILL_DB.filter(s=>!owned.has(s.id));
+  if(pool.length===0) return;
+  const skill = pool[rand(0,pool.length-1)];
+  player.skills.push(skill);
+  log(`📜 ${player.name}이(가) [${skill.name}] 스킬을 획득했다! (${reason})`);
+}
+
+async function doHunt(player, enemy){
+  addEnergy(player,-1);
+  const extra = consumeCombatSkillIfBeneficial(player, enemy.power);
+  const win = enemy.tier==='monster' ? (player.power+extra >= enemy.power) : (player.power+extra > enemy.power);
+  render();
+  await showBattleAnimation(player, enemy.icon, player.power+extra, enemy.power, win, enemy.name);
+  if(win){
+    addGold(player, enemy.gold);
+    log(`⚔️ ${player.name}이(가) ${enemy.icon} ${enemy.name}(파워${enemy.power})을(를) 물리쳤다! +${enemy.gold}G`);
+    if(enemy.tier==='boss'){ grantRandomSkill(player, `${enemy.name} 처치 보상`); }
+  } else {
+    log(`💀 ${player.name}이(가) ${enemy.icon} ${enemy.name}(파워${enemy.power}, 내 파워${player.power+extra})에게 패배했다...`);
+  }
+}
+
+async function resolveMonsterEncounter(player, tile){
+  const enemy = tile.t==='monster'
+    ? {name:tile.label, icon:tile.icon, power:tile.power, gold:tile.gold, tier:'monster'}
+    : generateEncounter(tile.t);
+  const qualifies = tile.t==='monster' ? (player.power >= enemy.power) : (player.power > enemy.power);
+  if(qualifies && player.energy>=1){
+    showPopup(`${enemy.icon} <b>${enemy.name}</b> 발견! (파워 ${enemy.power})`, 900);
+    await wait(700);
+    state.animating=true; render();
+    await doHunt(player, enemy);
+    state.animating=false; render();
+  } else if(player.energy<=0){
+    log(`${enemy.icon} ${player.name}: ${enemy.name}(파워${enemy.power})을(를) 발견했지만 에너지가 부족해 전투를 하지 않았습니다.`);
+    showPopup(`${enemy.icon} <b>${enemy.name}</b> 발견!<br>에너지 부족으로 전투 회피`, 1300);
+  } else {
+    log(`${enemy.icon} ${player.name}: ${enemy.name}(파워${enemy.power})을(를) 발견했지만 파워가 부족해 전투를 하지 않았습니다.`);
+    showPopup(`${enemy.icon} <b>${enemy.name}</b> 발견! (파워 ${enemy.power})<br>파워 부족으로 전투 회피`, 1300);
+  }
+}
+
+async function doFinalBoss(player){
+  if(player.evolutionStage<3){ log('아틀란티스 신전은 3단계 진화자만 진입 가능합니다.'); return; }
+  if(player.energy<=0){ log('에너지가 없어 도전할 수 없습니다.'); return; }
+  addEnergy(player,-1);
+  let bossPower = state.encounter ? state.encounter.power : FINAL_BOSS_POWER;
+  const keyIdx = player.skills.findIndex(s=>s.id==='key');
+  if(keyIdx>=0 && player.energy>=3){
+    addEnergy(player,-3);
+    bossPower -= 2;
+    player.skills.splice(keyIdx,1);
+    log(`🗝️ ${player.name}이(가) 중앙 열쇠를 사용! 보스 파워 -2`);
+    showPopup(`🗝️ <b>${player.name}</b>: 중앙 열쇠 사용! 보스 파워 -2`, 900);
+    await wait(700);
+  }
+  const extra = consumeCombatSkillIfBeneficial(player, bossPower);
+  const win = (player.power+extra) > bossPower;
+  render();
+  await showBattleAnimation(player, ORION.icon, player.power+extra, bossPower, win, ORION.name);
+  if(win){ victory(player); }
+  else {
+    if(player.shieldArmed){
+      player.shieldArmed=false;
+      log(`🛡️ ${player.name}의 보호막이 후퇴를 막았습니다!`);
+      showPopup(`🛡️ <b>${player.name}</b>: 보호막 발동! 후퇴 무효화`, 1100);
+    } else {
+      retreat(player);
+      log(`💀 ${player.name}이(가) 디스트로이어 오리온(파워${bossPower})에게 패배했다... 1칸 후퇴`);
+    }
+  }
+}
+
+async function doPvP(attacker, defender){
+  const win = attacker.power > defender.power;
+  const lose = defender.power > attacker.power;
+  render();
+  await showBattleAnimation(attacker, avatarFor(defender), attacker.power, defender.power, win);
+  if(win){
+    if(defender.shieldArmed){
+      defender.shieldArmed=false;
+      log(`🛡️ ${defender.name}의 보호막이 공격을 막았습니다!`);
+      showPopup(`🛡️ <b>${defender.name}</b>: 보호막 발동! 피해 무효화`, 1100);
+    } else {
+      const g=Math.min(20,defender.gold), en=Math.min(2,defender.energy);
+      addGold(defender,-g); addGold(attacker,g);
+      addEnergy(defender,-en); addEnergy(attacker,en);
+      let extraEnergy = 0;
+      const drainIdx = attacker.skills.findIndex(s=>s.id==='drain');
+      if(drainIdx>=0 && defender.energy>0){ addEnergy(defender,-1); addEnergy(attacker,1); extraEnergy=1; log(`🩸 ${attacker.name}의 '에너지 드레인' 발동!`); }
+      log(`⚔️ ${attacker.name}이(가) PvP 승리! ${g}G + 에너지 ${en+extraEnergy} 약탈`);
+    }
+  } else if(lose){
+    if(attacker.shieldArmed){
+      attacker.shieldArmed=false;
+      log(`🛡️ ${attacker.name}의 보호막이 공격을 막았습니다!`);
+      showPopup(`🛡️ <b>${attacker.name}</b>: 보호막 발동! 피해 무효화`, 1100);
+    } else {
+      const g=Math.min(20,attacker.gold), en=Math.min(2,attacker.energy);
+      addGold(attacker,-g); addGold(defender,g);
+      addEnergy(attacker,-en); addEnergy(defender,en);
+      log(`💀 ${defender.name}이(가) 반격 승리! ${g}G + 에너지 ${en} 약탈`);
+    }
+  } else {
+    log(`⚖️ ${attacker.name}과(와) ${defender.name}의 파워가 같아 무승부!`);
+  }
+}
+
+/* ---------------- Tile Event ---------------- */
+async function resolveTile(player){
+  state.encounter = null;
+  const tile = curTile(player);
+  const opp = other(player);
+
+  if(opp.position===player.position){
+    state.animating = true; render();
+    await doPvP(player, opp);
+    state.animating = false; render();
+  }
+  if(state.gameOver) return;
+
+  if(player.isAI){ await aiHandleTile(player, tile, opp); return; }
+
+  switch(tile.t){
+    case 'energy':
+      addEnergy(player,2);
+      log(`🍯 ${player.name}: 벌꿀에서 +2 충전 (현재 ${player.energy})`);
+      showPopup(`🍯 <b>${player.name}</b>: 벌꿀! +2 충전`, 1100);
+      state.phase='END'; break;
+    case 'gold':{
+      const g = state.lastDice*10;
+      addGold(player,g);
+      log(`🍀 ${player.name}: 럭키 클로버에서 +${g}G 획득`);
+      showPopup(`🍀 <b>${player.name}</b>: 럭키 클로버! +${g}G`, 1100);
+      state.phase='END'; break;}
+    case 'trap':{
+      const lost = Math.floor(player.gold*0.1);
+      addGold(player,-lost);
+      addEnergy(player,-1);
+      log(`🪤 ${player.name}: 트랩에 걸려 ${lost}G와 에너지 1을 잃었다!`);
+      showPopup(`🪤 <b>${player.name}</b>: 트랩! -${lost}G, 에너지 -1`, 1100);
+      state.phase='END'; break;}
+    case 'monster': case 'boss':
+      await resolveMonsterEncounter(player, tile);
+      state.phase='END'; break;
+    case 'temple':
+      if(player.evolutionStage===3) state.encounter = {power: FINAL_BOSS_POWER, isFinal:true};
+      state.phase='EVENT'; break;
+    case 'shop':
+      if(!state.pendingShop || state.pendingShop.type!=='shop'){
+        state.pendingShop={type:'shop', offers: pickShopOffers()};
+      }
+      state.phase='EVENT'; break;
+    case 'itemshop':
+      if(!state.pendingShop || state.pendingShop.type!=='itemshop'){
+        state.pendingShop={type:'itemshop', offers: pickItemOffers()};
+      }
+      state.phase='EVENT'; break;
+    default:
+      state.phase='END';
+  }
+  render();
+}
+
+function pickShopOffers(){
+  const shuffled = [...SKILL_DB].sort(()=>Math.random()-0.5);
+  return shuffled.slice(0,3).map(s=>s.id);
+}
+function pickItemOffers(){
+  const shuffled = [...ITEM_DB].sort(()=>Math.random()-0.5);
+  return shuffled.slice(0,3).map(i=>i.id);
+}
+
+/* ---------------- Turn flow ---------------- */
+async function performRoll(){
+  if(state.animating || state.gameOver) return;
+  const player = state.players[state.turn];
+  state.animating = true;
+  render();
+
+  const forceLucky = player.luckyDiceArmed;
+  const [d1,d2] = await animateDiceRoll(player, forceLucky);
+  if(forceLucky) player.luckyDiceArmed = false;
+  state.lastDicePair = [d1,d2];
+  state.lastDice = d1+d2;
+  const isDouble = d1===d2;
+  state.doublesInARow = isDouble ? state.doublesInARow+1 : 0;
+
+  if(isDouble && state.doublesInARow>=3){
+    state.doublesInARow = 0;
+    state.lastRollWasDouble = false;
+    log(`💥 ${player.name}: 3연속 더블! 모든 플레이어가 출발로 소환됩니다!`);
+    await triggerChaosRecall();
+    state.animating=false;
+    render();
+    endTurn();
+    return;
+  }
+  state.lastRollWasDouble = isDouble;
+
+  let mult=1;
+  const hasteIdx = player.skills.findIndex(s=>s.id==='haste');
+  if(state.hasteActive && hasteIdx>=0){
+    mult=2; addEnergy(player,-1); player.skills.splice(hasteIdx,1);
+    log(`👟 ${player.name}이(가) '축지법' 사용! 이동거리 2배`);
+    showPopup(`👟 <b>${player.name}</b>: 축지법 발동! 이동거리 2배`, 900);
+    await wait(600);
+  }
+  const move = Math.max(1, (d1+d2)*mult);
+
+  for(let s=0;s<move;s++){
+    const cur = player.position;
+    const next = NODEMAP[cur].perimeterNext;
+    player.prevPosition = cur;
+    player.position = next;
+    if(player.position==='P0'){
+      addEnergy(player,1);
+      log(`🏁 ${player.name}: 출발 지점 통과, 에너지 +1`);
+    }
+    if(NODEMAP[player.position].t==='portal' && s===move-1){
+      render();
+      const dest = player.isAI ? await aiPickPortal(player, player.position) : await askPortalPopup(player, player.position);
+      log(`🌀 ${player.name}: 차원문 이동!`);
+      player.position = dest;
+    }
+    render();
+    await wait(120);
+  }
+  const landedEl = document.getElementById('tile-'+player.position);
+  if(landedEl){ landedEl.classList.add('landed-flash'); setTimeout(()=>landedEl.classList.remove('landed-flash'),700*PACE); }
+  log(`🎲 ${player.name}: 주사위 ${isDouble?`${d1}+${d2} (더블!)`:`${d1+d2}`} → ${move}칸 이동 (도착: ${NODEMAP[player.position].label})`);
+  state.hasteActive=false;
+  state.animating=false;
+  await resolveTile(player);
+}
+
+function endTurn(){
+  state.pendingShop=null;
+  state.encounter=null;
+  state.doublesInARow=0;
+  state.lastRollWasDouble=false;
+  state.turn = 1-state.turn;
+  state.phase='ROLL';
+  const next = state.players[state.turn];
+  render();
+  if(next.isAI && !state.gameOver){ runAITurn(); }
+}
+
+function victory(player){
+  state.gameOver=true;
+  render();
+  const el = document.getElementById('overlay-card');
+  el.className = 'card victory-glow';
+  el.innerHTML = `<h2>🏆 VICTORY 🏆</h2><p style="font-size:18px;">${player.name}이(가) 디스트로이어 오리온을 물리치고<br>우주 벌꿀을 지켜냈습니다!</p><button class="primary" onclick="location.reload()">다시 하기</button>`;
+  document.getElementById('overlay').style.display='flex';
+}
+
+/* ---------------- AI Logic ---------------- */
+async function aiHandleTile(ai, tile, user){
+  const say = async (m, popupText)=>{
+    log(`🤖 ${m}`);
+    showPopup(`🤖 ${popupText||m}`, 850);
+    await wait(750);
+  };
+
+  if(tile.t==='temple'){
+    if(ai.evolutionStage===3 && ai.power>FINAL_BOSS_POWER && ai.energy>=1){
+      state.encounter = {power:FINAL_BOSS_POWER, isFinal:true};
+      await say(`${ai.name}이(가) 최종 보스에게 도전합니다!`, `${ai.name}: 최종 보스 도전!`);
+      await doFinalBoss(ai);
+    } else {
+      await say(`${ai.name}: 아틀란티스 신전 조건 미충족, 대기.`);
+    }
+  } else if(tile.t==='monster'||tile.t==='boss'){
+    await resolveMonsterEncounter(ai, tile);
+  } else if(tile.t==='energy'){
+    addEnergy(ai,2); await say(`${ai.name}: 벌꿀에서 +2 충전.`);
+  } else if(tile.t==='gold'){
+    const g=state.lastDice*10; addGold(ai,g); await say(`${ai.name}: 럭키 클로버에서 +${g}G.`);
+  } else if(tile.t==='trap'){
+    const lost=Math.floor(ai.gold*0.1); addGold(ai,-lost); addEnergy(ai,-1);
+    await say(`${ai.name}: 트랩으로 ${lost}G와 에너지 1 손실.`);
+  } else if(tile.t==='shop'){
+    const offers = pickShopOffers().map(skillById).filter(s=>!ai.skills.find(o=>o.id===s.id));
+    const affordable = offers.filter(s=> ai.gold>=priceOf(s) );
+    if(affordable.length && ai.skills.length<ai.skillSlots){
+      const pick = affordable[0];
+      addGold(ai,-priceOf(pick)); ai.skills.push(pick);
+      await say(`${ai.name}: 스킬 상점에서 [${pick.name}] 구매.`);
+    } else await say(`${ai.name}: 스킬 상점, 구매 안함.`);
+  } else if(tile.t==='itemshop'){
+    const offers = pickItemOffers().map(itemById).filter(Boolean);
+    const affordable = offers.filter(it=> ai.gold>=it.price);
+    if(affordable.length && ai.items.length<maxItemsFor(ai)){
+      const pick = affordable[0];
+      addGold(ai,-pick.price); ai.items.push(pick);
+      await say(`${ai.name}: 아이템 상점에서 [${pick.name}] 구매.`);
+    } else await say(`${ai.name}: 아이템 상점, 구매 안함.`);
+  }
+
+  render();
+  if(state.gameOver) return;
+
+  const potionIdx = ai.items.findIndex(i=>i.id==='potion');
+  if(potionIdx>=0){ addPower(ai,1); ai.items.splice(potionIdx,1); await say(`${ai.name}: 파워 물약 사용!`); }
+  const capsuleIdx = ai.items.findIndex(i=>i.id==='capsule');
+  if(capsuleIdx>=0 && ai.energy<maxEnergyFor(ai)){ addEnergy(ai,3); ai.items.splice(capsuleIdx,1); await say(`${ai.name}: 에너지 캡슐 사용!`); }
+  const shieldIdx = ai.items.findIndex(i=>i.id==='shield');
+  if(shieldIdx>=0 && !ai.shieldArmed){ ai.shieldArmed=true; ai.items.splice(shieldIdx,1); await say(`${ai.name}: 보호막 장착!`); }
+
+  if(state.gameOver) return;
+  if(ai.energy<=1 && ai.gold>=30){
+    addEnergy(ai,2); addGold(ai,-30);
+    await say(`${ai.name}: 자원 관리 - 30G로 에너지 충전.`);
+  } else if(ai.gold>=100){
+    addGold(ai,-100); addPower(ai,1);
+    await say(`${ai.name}: 자원 관리 - 100G로 파워 토큰 구매.`);
+  }
+  render();
+  await wait(300);
+  if(state.lastRollWasDouble && state.doublesInARow<3 && !state.gameOver){
+    await performRoll();
+  } else {
+    endTurn();
+  }
+}
+
+async function runAITurn(){
+  const ai = state.players[state.turn];
+  log(`🤖 ${ai.name}이(가) 행동을 생각 중입니다...`);
+  render();
+  await wait(600);
+  await performRoll();
+}
+
+/* ---------------- Player Actions ---------------- */
+async function actFinalBoss(){
+  const p = state.players[state.turn];
+  state.animating = true; render();
+  showPopup(`🏛️ <b>${p.name}</b>: 최종 보스 도전을 선택했습니다!`, 700);
+  await wait(650);
+  await doFinalBoss(p);
+  state.encounter=null;
+  state.animating=false;
+  if(!state.gameOver){ state.phase='END'; render(); }
+}
+function actBrokerBuy(kind){
+  const p = state.players[state.turn];
+  if(kind==='power' && p.gold>=100){ addGold(p,-100); addPower(p,1); log(`${p.name}: 파워 토큰 구매 (100G)`); showPopup(`💎 <b>${p.name}</b>: 파워 토큰 구매!`,1000); }
+  if(kind==='energy' && p.gold>=30){ addGold(p,-30); addEnergy(p,2); log(`${p.name}: 에너지 충전 (30G)`); showPopup(`💧 <b>${p.name}</b>: 에너지 충전 구매!`,1000); }
+  render();
+}
+function actShopBuy(skillId){
+  const p = state.players[state.turn];
+  const skill = skillById(skillId);
+  const price = priceOf(skill);
+  if(p.gold<price){ log('골드가 부족합니다.'); return; }
+  if(p.skills.length>=p.skillSlots){ log('스킬 슬롯이 가득 찼습니다.'); return; }
+  addGold(p,-price); p.skills.push(skill);
+  log(`${p.name}: [${skill.name}] 스킬 구매 (${price}G)`);
+  showPopup(`🥋 <b>${p.name}</b>: [${skill.name}] 구매!`, 1100);
+  state.pendingShop=null; state.phase='END'; render();
+}
+function actItemBuy(itemId){
+  const p = state.players[state.turn];
+  const item = itemById(itemId);
+  if(p.gold<item.price){ log('골드가 부족합니다.'); return; }
+  if(p.items.length>=maxItemsFor(p)){ log('아이템 슬롯이 가득 찼습니다.'); return; }
+  addGold(p,-item.price); p.items.push(item);
+  log(`${p.name}: [${item.name}] 아이템 구매 (${item.price}G)`);
+  showPopup(`🛍️ <b>${p.name}</b>: [${item.name}] 구매!`, 1100);
+  state.pendingShop=null; state.phase='END'; render();
+}
+function actUseSkill(skillId){
+  const p = state.players[state.turn];
+  const idx = p.skills.findIndex(s=>s.id===skillId);
+  if(idx<0) return;
+  const skill = p.skills[idx];
+  if(skill.id==='meditate'){
+    if(p.gold<30){ log('골드가 부족합니다.'); return; }
+    addGold(p,-30); addEnergy(p,2);
+    log(`🧘 ${p.name}: 명상으로 에너지 +2 (30G)`);
+    showPopup(`🧘 <b>${p.name}</b>: 명상! 에너지 +2`, 1000);
+    p.skills.splice(idx,1);
+  } else if(skill.id==='haste'){
+    if(state.phase!=='ROLL'){ log('주사위를 굴리기 전에만 사용할 수 있습니다.'); return; }
+    if(p.energy<1){ log('에너지가 부족합니다.'); return; }
+    state.hasteActive=true;
+    log(`👟 ${p.name}: 축지법 준비 완료 (주사위를 굴리세요)`);
+    showPopup(`👟 <b>${p.name}</b>: 축지법 준비!`, 900);
+  } else if(skill.id==='hook'){
+    const opp = other(p);
+    if(p.energy<2){ log('에너지가 부족합니다.'); return; }
+    if(dist(p.position,opp.position)>4){ log('상대가 4칸 이내에 있지 않습니다.'); return; }
+    addEnergy(p,-2); opp.position=p.position; p.skills.splice(idx,1);
+    log(`⛓️ ${p.name}: 갈고리 사슬로 ${opp.name}을(를) 끌어왔다! 강제 PvP 시작`);
+    showPopup(`⛓️ <b>${p.name}</b>: 갈고리 사슬! 강제 PvP`, 900);
+    (async ()=>{
+      state.animating=true; render();
+      await doPvP(p, opp);
+      state.animating=false; render();
+    })();
+    return;
+  } else if(skill.id==='break'){
+    log('한계 돌파는 전투 시 자동으로 발동됩니다.'); return;
+  } else if(skill.id==='drain'){
+    log('에너지 드레인은 PvP 승리 시 자동으로 발동됩니다.'); return;
+  } else if(skill.id==='key'){
+    log('중앙 열쇠는 최종 보스전에서 자동으로 발동됩니다.'); return;
+  }
+  render();
+}
+async function actUseItem(itemId){
+  const p = state.players[state.turn];
+  const idx = p.items.findIndex(i=>i.id===itemId);
+  if(idx<0) return;
+  const item = p.items[idx];
+  if(item.id==='potion'){
+    addPower(p,1); p.items.splice(idx,1);
+    log(`🧪 ${p.name}: 파워 물약 사용! 파워 +1`);
+    showPopup(`🧪 <b>${p.name}</b>: 파워 물약! 파워 +1`, 1000);
+  } else if(item.id==='capsule'){
+    addEnergy(p,3); p.items.splice(idx,1);
+    log(`⚡ ${p.name}: 에너지 캡슐 사용! 에너지 +3`);
+    showPopup(`⚡ <b>${p.name}</b>: 에너지 캡슐! 에너지 +3`, 1000);
+  } else if(item.id==='shield'){
+    p.shieldArmed = true; p.items.splice(idx,1);
+    log(`🛡️ ${p.name}: 보호막 장착! 다음 전투 패배 무효화`);
+    showPopup(`🛡️ <b>${p.name}</b>: 보호막 장착!`, 1000);
+  } else if(item.id==='luckydice'){
+    p.luckyDiceArmed = true; p.items.splice(idx,1);
+    log(`🎯 ${p.name}: 행운의 주사위 장착! 다음 주사위 6+6 고정`);
+    showPopup(`🎯 <b>${p.name}</b>: 행운의 주사위 장착!`, 1000);
+  } else if(item.id==='charm'){
+    if(state.animating) return;
+    p.items.splice(idx,1);
+    log(`🌀 ${p.name}: 순간이동 부적 사용! 3칸 전진`);
+    showPopup(`🌀 <b>${p.name}</b>: 순간이동 부적!`, 900);
+    state.animating = true; render();
+    for(let s=0;s<3;s++){
+      const cur=p.position; p.prevPosition=cur; p.position=NODEMAP[cur].perimeterNext;
+      if(p.position==='P0') addEnergy(p,1);
+      render(); await wait(160);
+    }
+    state.animating=false;
+    await resolveTile(p);
+    return;
+  }
+  render();
+}
+function skipEvent(){
+  const p = state.players[state.turn];
+  showPopup(`🏃 <b>${p.name}</b>: 후퇴를 선택했습니다.`, 900);
+  state.phase='END'; state.pendingShop=null; state.encounter=null; render();
+}
+
+/* ---------------- Rendering ---------------- */
+function tokenHTML(player){
+  const cls = player.id===1 ? 'tok-p1':'tok-p2';
+  return `<div class="token ${cls} stage${player.evolutionStage}" title="${player.name}">${avatarToken(player)}</div>`;
+}
+
+function boardTileSize(){
+  const GAP = 8;
+  const wrap = document.getElementById('board-wrap');
+  const rawW = (wrap ? wrap.clientWidth : window.innerWidth);
+  const availW = Math.max(0, rawW - 40 - GAP*(W-1));
+  const availH = Math.max(0, Math.max(180, window.innerHeight*0.42) - GAP*(H-1));
+  const byW = Math.floor(availW / W);
+  const byH = Math.floor(availH / H);
+  return Math.max(18, Math.min(90, Math.min(byW, byH)));
+}
+function renderBoard(){
+  const board = document.getElementById('board');
+  const ts = boardTileSize();
+  board.style.gridTemplateColumns = `repeat(${W}, ${ts}px)`;
+  board.style.gridTemplateRows = `repeat(${H}, ${ts}px)`;
+  const byCoord = {};
+  Object.values(NODEMAP).forEach(n=>{ byCoord[`${n.row},${n.col}`]=n; });
+  let html='';
+  for(let r=0;r<H;r++){
+    for(let c=0;c<W;c++){
+      const node = byCoord[`${r},${c}`];
+      if(node){
+        const marks = state.players.filter(p=>p.position===node.id).map(tokenHTML).join('');
+        const tip = tileTip(node);
+        const cls = ['tile',
+          node.t==='temple'?'temple':'',
+          (node.t==='monster'||node.t==='boss')?'mzone':'',
+          VILLAGE_TYPES.includes(node.t)?'village':'',
+          r===0?'top-row':'',
+          c===0?'edge-left':'',
+          c===W-1?'edge-right':''].filter(Boolean).join(' ');
+        html += `<div class="${cls}" id="tile-${node.id}" style="grid-row:${r+1};grid-column:${c+1}">${marks}<div>${node.icon}</div><div class="tlabel">${node.label}</div><div class="tip"><b>${node.icon} ${node.label}</b><br>${tip}</div></div>`;
+      } else if(r===Math.floor(H/2) && c===Math.floor(W/2)){
+        html += `<div class="ship-deco" style="grid-row:${r+1};grid-column:${c+1}"><div class="si">🛸</div></div>`;
+      } else {
+        html += `<div style="grid-row:${r+1};grid-column:${c+1}"></div>`;
+      }
+    }
+  }
+  board.innerHTML = html;
+}
+
+function renderSide(player, elId){
+  const el = document.getElementById(elId);
+  const isActive = state.players[state.turn].id===player.id && !state.gameOver && state.started;
+  const cap = maxEnergyFor(player);
+  const itemCap = maxItemsFor(player);
+  const powerBlocks = Array.from({length:8},(_,i)=> i<player.power?'<div class="block power"></div>':'<div class="block empty"></div>').join('');
+  const energyBlocks = Array.from({length:6},(_,i)=>{
+    if(i<player.energy) return '<div class="block energy"></div>';
+    if(i<cap) return '<div class="block empty"></div>';
+    return '<div class="block locked"></div>';
+  }).join('');
+  const skillHtml = Array.from({length:player.skillSlots},(_,i)=>{
+    const s = player.skills[i];
+    if(!s) return `<div class="skill-slot empty"></div>`;
+    const usable = !player.isAI && ['meditate','haste','hook'].includes(s.id);
+    return `<div class="skill-chip"><span class="ico">${s.icon}</span><b>${s.name}</b>
+      ${usable?`<button style="margin-top:6px;padding:3px 8px;font-size:10px" onclick="actUseSkill('${s.id}')">사용</button>`:''}
+      <div class="tip"><b>${s.icon} ${s.name}</b><br>${s.desc}</div>
+    </div>`;
+  }).join('');
+  const itemHtml = Array.from({length:itemCap},(_,i)=>{
+    const it = player.items[i];
+    if(!it) return `<div class="skill-slot empty"></div>`;
+    const usable = !player.isAI;
+    return `<div class="skill-chip"><span class="ico">${it.icon}</span><b>${it.name}</b>
+      ${usable?`<button style="margin-top:6px;padding:3px 8px;font-size:10px" onclick="actUseItem('${it.id}')">사용</button>`:''}
+      <div class="tip"><b>${it.icon} ${it.name}</b><br>${it.desc}</div>
+    </div>`;
+  }).join('');
+  el.className = `side ${player.id===1?'p1':'p2'} ${isActive?'active-turn':''}`;
+  el.innerHTML = `
+    <div class="avatar-box"><div class="avatar stage${player.evolutionStage}">${avatarFor(player)}</div>
+      <div class="pname">${player.name}${player.character?` · ${CHARACTERS[player.character].name}`:''}</div>
+      <div class="stage-tag">진화 ${player.evolutionStage}단계 · 스킬 ${player.skillSlots}칸 · 아이템 ${itemCap}칸</div>
+    </div>
+    <div class="stat-row"><span>POWER</span><span>${player.power}</span></div>
+    <div class="tower power">${powerBlocks}<div class="tip"><b>💪 파워</b><br>진화 1단계: 0~3<br>진화 2단계: 4~7<br>진화 3단계: 8+</div></div>
+    <div class="stat-row"><span>ENERGY</span><span>${player.energy}/${cap}</span></div>
+    <div class="tower energy">${energyBlocks}<div class="tip"><b>⚡ 에너지 최대치</b><br>진화 1단계: 2<br>진화 2단계: 4<br>진화 3단계: 6</div></div>
+    <div class="gold-line">💰 ${player.gold} G</div>
+    <div class="skills-title">SKILLS<div class="tip"><b>📜 스킬 슬롯</b><br>진화 1단계: 2칸<br>진화 2단계: 3칸<br>진화 3단계: 4칸</div></div>
+    <div class="skill-slots">${skillHtml}</div>
+    <div class="skills-title">ITEMS<div class="tip"><b>🎒 아이템 슬롯</b><br>진화 1단계: 1칸<br>진화 2단계: 2칸<br>진화 3단계: 3칸</div></div>
+    <div class="skill-slots">${itemHtml}</div>
+  `;
+}
+
+function renderLog(){
+  document.getElementById('log').innerHTML = state.logHistory.map(m=>`<div>${m}</div>`).join('');
+}
+
+function renderControls(){
+  const el = document.getElementById('controls');
+  let mainHtml = '';
+  if(!state.started){
+    mainHtml = `<div style="text-align:center;color:var(--dim)">게임을 시작해주세요</div>`;
+  } else if(state.gameOver){
+    mainHtml = `<div style="text-align:center;color:var(--dim)">게임 종료</div>`;
+  } else {
+    const p = state.players[state.turn];
+    if(state.animating){
+      mainHtml = `<div class="thinking">⏳ 진행 중...</div>`;
+    } else if(p.isAI){
+      mainHtml = `<div class="thinking">🤖 AI가 행동을 생각 중입니다...</div>`;
+    } else {
+      let html = `<div class="msg-turn">${p.name}의 턴</div>`;
+      const tile = curTile(p);
+
+      if(state.phase==='ROLL'){
+        html += `<div class="row">
+          <button class="primary" onclick="performRoll()">🎲 주사위 굴리기 ${state.hasteActive?'(축지법 적용됨)':''}</button>
+        </div>`;
+      } else if(state.phase==='EVENT'){
+        html += `<div>현재 타일: <b>${tile.icon} ${tile.label}</b></div>`;
+        if(tile.t==='temple'){
+          if(p.evolutionStage===3 && state.encounter){
+            const hasKey = p.skills.some(s=>s.id==='key');
+            html += `<div class="encounter-box">
+              디스트로이어 오리온 파워: <b style="color:var(--power)">${state.encounter.power}</b> &nbsp;vs&nbsp; 내 파워: <b style="color:var(--energy)">${p.power}</b>
+              ${hasKey?'<div style="font-size:11px;color:var(--dim);margin-top:4px">🗝️ 중앙 열쇠 보유 — 전투 시 자동으로 -2 적용</div>':''}
+              <div class="row">
+                <button class="danger" ${p.energy<=0?'disabled':''} onclick="actFinalBoss()">🏛️ 최종 보스 도전</button>
+                <button onclick="skipEvent()">🏃 후퇴</button>
+              </div>
+            </div>`;
+          } else {
+            html += `<div style="color:var(--dim);margin-top:6px">3단계 진화자만 진입 가능합니다.</div><div class="row"><button onclick="skipEvent()">확인</button></div>`;
+          }
+        }
+        if(state.pendingShop && state.pendingShop.type==='shop'){
+          html += `<div>`;
+          state.pendingShop.offers.forEach(id=>{
+            const s = skillById(id);
+            const price = priceOf(s);
+            const owned = p.skills.find(o=>o.id===id);
+            html += `<div class="shop-item"><span>${s.icon} <b>${s.name}</b> <span class="badge">${s.desc}</span></span>
+              <button ${p.gold<price||owned||p.skills.length>=p.skillSlots?'disabled':''} onclick="actShopBuy('${id}')">${price}G 구매</button></div>`;
+          });
+          html += `</div><div class="row"><button onclick="skipEvent()">나가기</button></div>`;
+        }
+        if(state.pendingShop && state.pendingShop.type==='itemshop'){
+          html += `<div class="shop-item"><span>💎 <b>파워 토큰</b> <span class="badge">파워 +1 (영구)</span></span>
+            <button ${p.gold<100?'disabled':''} onclick="actBrokerBuy('power')">100G 구매</button></div>`;
+          html += `<div class="shop-item"><span>💧 <b>에너지 충전</b> <span class="badge">에너지 +2</span></span>
+            <button ${p.gold<30?'disabled':''} onclick="actBrokerBuy('energy')">30G 구매</button></div>`;
+          state.pendingShop.offers.forEach(id=>{
+            const it = itemById(id);
+            html += `<div class="shop-item"><span>${it.icon} <b>${it.name}</b> <span class="badge">${it.desc}</span></span>
+              <button ${p.gold<it.price||p.items.length>=maxItemsFor(p)?'disabled':''} onclick="actItemBuy('${id}')">${it.price}G 구매</button></div>`;
+          });
+          html += `<div class="row"><button onclick="skipEvent()">나가기</button></div>`;
+        }
+      } else if(state.phase==='END'){
+        if(state.lastRollWasDouble && state.doublesInARow<3){
+          html += `<div class="row"><button class="primary" onclick="performRoll()">🎲 더블! 한 번 더 굴리기</button></div>`;
+        } else {
+          html += `<div class="row"><button class="primary" onclick="endTurn()">➡️ 턴 종료</button></div>`;
+        }
+      }
+
+      const anytimeSkills = p.skills.filter(s=>['meditate','hook'].includes(s.id) || (s.id==='haste'&&state.phase==='ROLL'));
+      const anytimeItems = p.items.filter(it=>['potion','capsule','shield','luckydice'].includes(it.id) || (it.id==='charm'&&!state.animating));
+      if(anytimeSkills.length || anytimeItems.length){
+        html += `<div class="skills-title" style="margin-top:14px">스킬 / 아이템 사용</div><div class="row">`;
+        anytimeSkills.forEach(s=>{ html += `<button onclick="actUseSkill('${s.id}')">${s.icon} ${s.name}</button>`; });
+        anytimeItems.forEach(it=>{ html += `<button onclick="actUseItem('${it.id}')">${it.icon} ${it.name}</button>`; });
+        html += `</div>`;
+      }
+      mainHtml = html;
+    }
+  }
+
+  const skillCodex = SKILL_DB.map(s=>`${s.icon} <b>${s.name}</b> — ${s.desc}`).join('<br>');
+  const itemCodex = ITEM_DB.map(i=>`${i.icon} <b>${i.name}</b> — ${i.desc}`).join('<br>');
+  el.innerHTML = `<div class="controls-flex">
+    <div class="controls-main">${mainHtml}</div>
+    <div class="controls-codex">
+      <div class="codex-btn">📜 스킬 도감<div class="tip codex-tip"><b>📜 스킬 목록</b><br>${skillCodex}</div></div>
+      <div class="codex-btn">🎒 아이템 도감<div class="tip codex-tip"><b>🎒 아이템 목록</b><br>${itemCodex}</div></div>
+    </div>
+  </div>`;
+}
+
+function flushFx(){
+  if(!state.fxQueue.length) return;
+  const queue = state.fxQueue; state.fxQueue=[];
+  queue.forEach(f=>{
+    const panel = document.getElementById(f.playerId===1?'panel-p1':'panel-p2');
+    if(!panel) return;
+    let target;
+    if(f.stat==='gold') target = panel.querySelector('.gold-line');
+    else if(f.stat==='power') target = panel.querySelector('.tower.power');
+    else if(f.stat==='energy') target = panel.querySelector('.tower.energy');
+    if(!target) return;
+    const span = document.createElement('div');
+    span.className = 'float-fx ' + (f.amount>=0?'pos':'neg');
+    span.textContent = (f.amount>=0?'+':'') + f.amount + (f.stat==='gold'?'G':'');
+    target.appendChild(span);
+    setTimeout(()=>span.remove(), 1000);
+  });
+}
+
+function render(){
+  renderBoard();
+  renderSide(state.players[0], 'panel-p1');
+  renderSide(state.players[1], 'panel-p2');
+  renderControls();
+  renderLog();
+  flushFx();
+}
+
+/* ---------------- Start / Character select screens ---------------- */
+function showStartScreen(){
+  const el = document.getElementById('overlay-card');
+  el.className = 'card';
+  el.innerHTML = `
+    <h2>⚔️ 허니뱅의 우주 참교육 대모험 ⚔️</h2>
+    <p style="color:var(--dim); margin:10px 0 26px; font-size:13px; max-width:380px;">우주 벌꿀 뷔페를 향해! 폭주하는 동물 대장들을 참교육하고,<br>오리온의 배신을 막아라!</p>
+    <button class="primary" style="font-size:16px;padding:14px 30px;" onclick="showCharSelect()">🎮 게임 시작</button>
+  `;
+  document.getElementById('overlay').style.display='flex';
+}
+function showCharSelect(){
+  const el = document.getElementById('overlay-card');
+  el.className = 'card';
+  const cards = Object.keys(CHARACTERS).map(key=>{
+    const c = CHARACTERS[key];
+    return `<div class="char-card" onclick="startGame('${key}')">
+      <div class="cico">${c.base}</div>
+      <div class="cname">${c.name}</div>
+      <div class="cdesc">${c.desc}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `
+    <h2 style="font-size:20px;">캐릭터를 선택하세요</h2>
+    <div class="char-grid">${cards}</div>
+  `;
+  document.getElementById('overlay').style.display='flex';
+}
+function startGame(character){
+  const pool = Object.keys(CHARACTERS).filter(k=>k!==character);
+  const aiChar = pool[rand(0,pool.length-1)];
+  state.players[0].character = character;
+  state.players[1].character = aiChar;
+  state.started = true;
+  document.getElementById('overlay').style.display='none';
+  log(`게임을 시작합니다! ${CHARACTERS[character].name}(Player 1) vs ${CHARACTERS[aiChar].name}(AI Rival)`);
+  render();
+}
+
+/* ---------------- Touch support (tap to show tooltips) ---------------- */
+document.addEventListener('click', (e)=>{
+  const tipHost = e.target.closest('.tile, .skill-chip, .tower, .skills-title, .codex-btn');
+  document.querySelectorAll('.show-tip').forEach(elx=>{ if(elx!==tipHost) elx.classList.remove('show-tip'); });
+  if(tipHost && !e.target.closest('button')){
+    tipHost.classList.toggle('show-tip');
+  }
+});
+
+let resizeRenderTimer=null;
+function scheduleResize(){
+  clearTimeout(resizeRenderTimer);
+  resizeRenderTimer = setTimeout(renderBoard, 60);
+}
+window.addEventListener('resize', scheduleResize);
+window.addEventListener('orientationchange', ()=>{ setTimeout(renderBoard, 200); });
+if(window.ResizeObserver){
+  new ResizeObserver(scheduleResize).observe(document.getElementById('board-wrap'));
+}
+
+/* ---------------- Init ---------------- */
+render();
+showStartScreen();
+</script>
+</body>
+</html>
