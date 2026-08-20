@@ -6,6 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#12131c">
+<link rel="manifest" id="manifest-link">
 <title>허니뱅의 우주 참교육 대모험</title>
 <style>
   :root{
@@ -142,9 +144,65 @@
   .result{ font-size:24px; }
   .result.win{ color:var(--good); text-shadow:0 0 14px var(--good);}
   .result.lose{ color:var(--danger); text-shadow:0 0 14px var(--danger);}
+
+  /* ---------------- Fullscreen button ---------------- */
+  .fullscreen-btn{ position:fixed; top:calc(8px + env(safe-area-inset-top)); right:calc(8px + env(safe-area-inset-right)); z-index:500; font-size:11px; padding:7px 11px; opacity:.82; }
+  .fullscreen-btn:active{ opacity:1; }
+
+  /* ---------------- Rotate-device hint (portrait on phones) ---------------- */
+  #rotate-hint{
+    display:none; position:fixed; inset:0; z-index:99999; background:#05060cf7;
+    flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; color:var(--text); padding:30px; gap:14px;
+  }
+  @media (orientation:portrait) and (max-width:900px){
+    #rotate-hint{ display:flex; }
+    #rotate-hint .rotate-emoji{ font-size:60px; animation: rotatePulse 1.6s ease-in-out infinite; }
+    @keyframes rotatePulse{ 0%,100%{ transform:rotate(0deg);} 50%{ transform:rotate(90deg);} }
+    #rotate-hint b{ color:var(--gold); font-size:17px; }
+    #rotate-hint p{ color:var(--dim); font-size:13px; line-height:1.6; max-width:320px; }
+  }
+
+  /* ---------------- iPhone landscape optimization ---------------- */
+  @media (orientation:landscape) and (max-height:520px){
+    body{ padding:8px; font-size:13px;
+      padding-left:calc(8px + env(safe-area-inset-left));
+      padding-right:calc(8px + env(safe-area-inset-right));
+      padding-bottom:calc(8px + env(safe-area-inset-bottom));
+      padding-top:calc(6px + env(safe-area-inset-top));
+    }
+    h1{ font-size:14px; margin:0 0 6px; letter-spacing:.3px; }
+    .app{ gap:8px; }
+    .side{ width:128px; padding:8px; }
+    .center{ gap:6px; }
+    .avatar-box{ margin-bottom:2px; }
+    .avatar{ font-size:30px; }
+    .pname{ font-size:11.5px; margin-top:2px; }
+    .stage-tag{ font-size:9px; padding:2px 6px; margin-top:2px; }
+    .stat-row{ font-size:9.5px; margin:5px 0 2px; }
+    .tower{ min-height:20px; padding:4px; gap:2px; }
+    .block{ width:10px; height:10px; }
+    .gold-line{ font-size:11.5px; margin-top:5px; }
+    .skills-title{ font-size:9px; margin-top:6px; }
+    .skill-slots{ gap:3px; margin-top:3px; }
+    .skill-chip, .skill-slot.empty{ width:42px; }
+    .skill-chip{ padding:4px 3px; font-size:8.5px;}
+    .skill-chip b{ font-size:9px; }
+    .skill-chip .ico{ font-size:13px; }
+    #board-wrap{ padding:10px; }
+    #controls{ padding:8px; min-height:auto; }
+    .controls-flex{ gap:8px; }
+    .controls-codex{ width:96px; gap:5px; }
+    .codex-btn{ padding:7px 4px; font-size:9.5px; }
+    #log{ height:56px; padding:7px 9px; font-size:10.5px; }
+    .row{ gap:6px; margin-top:6px; }
+    button{ padding:8px 12px; font-size:12px; }
+    .fullscreen-btn{ font-size:10px; padding:5px 8px; top:calc(4px + env(safe-area-inset-top)); right:calc(4px + env(safe-area-inset-right)); }
+  }
 </style>
 </head>
 <body>
+<button class="fullscreen-btn" id="fullscreen-btn" onclick="toggleFullscreen()">⛶ 전체화면</button>
 <h1>⚔️ 허니뱅의 우주 참교육 대모험 ⚔️</h1>
 <div class="app">
   <div class="side" id="panel-p1"></div>
@@ -159,6 +217,11 @@
   <div class="side" id="panel-p2"></div>
 </div>
 <div id="overlay"><div class="card" id="overlay-card"></div></div>
+<div id="rotate-hint">
+  <div class="rotate-emoji">📱↻</div>
+  <b>기기를 가로로 돌려주세요</b>
+  <p>이 게임은 아이폰 가로 모드에 최적화되어 있어요.<br>기기를 옆으로 돌리면 자동으로 전환됩니다.</p>
+</div>
 
 <script>
 /* ---------------- Pacing ---------------- */
@@ -986,11 +1049,14 @@ function boardTileSize(){
   const GAP = 8;
   const wrap = document.getElementById('board-wrap');
   const rawW = (wrap ? wrap.clientWidth : window.innerWidth);
-  const availW = Math.max(0, rawW - 40 - GAP*(W-1));
-  const availH = Math.max(0, Math.max(180, window.innerHeight*0.42) - GAP*(H-1));
+  const isPhoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 520px)').matches;
+  const heightRatio = isPhoneLandscape ? 0.62 : 0.42;
+  const wrapPad = isPhoneLandscape ? 20 : 40;
+  const availW = Math.max(0, rawW - wrapPad - GAP*(W-1));
+  const availH = Math.max(0, Math.max(140, window.innerHeight*heightRatio) - GAP*(H-1));
   const byW = Math.floor(availW / W);
   const byH = Math.floor(availH / H);
-  return Math.max(18, Math.min(90, Math.min(byW, byH)));
+  return Math.max(16, Math.min(90, Math.min(byW, byH)));
 }
 function renderBoard(){
   const board = document.getElementById('board');
@@ -1242,6 +1308,61 @@ document.addEventListener('click', (e)=>{
     tipHost.classList.toggle('show-tip');
   }
 });
+
+/* ---------------- Fullscreen / Landscape (PWA) ---------------- */
+(function setupManifest(){
+  try{
+    const manifest = {
+      name: "허니뱅의 우주 참교육 대모험",
+      short_name: "허니뱅 보드게임",
+      display: "fullscreen",
+      orientation: "landscape",
+      start_url: location.href,
+      background_color: "#12131c",
+      theme_color: "#12131c"
+    };
+    const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+    document.getElementById('manifest-link').setAttribute('href', URL.createObjectURL(blob));
+  }catch(e){}
+})();
+
+function toggleFullscreen(){
+  const el = document.documentElement;
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+  const btn = document.getElementById('fullscreen-btn');
+  if(!isFs){
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if(req){
+      Promise.resolve(req.call(el)).then(()=>{
+        if(btn) btn.textContent='⛶ 전체화면 종료';
+        if(screen.orientation && screen.orientation.lock){
+          screen.orientation.lock('landscape').catch(()=>{});
+        }
+      }).catch(()=>{
+        showPopup('⛶ 이 브라우저는 전체화면을 지원하지 않아요.<br>iPhone은 공유 버튼 → "홈 화면에 추가" 후 실행하면<br>주소창 없이 전체화면으로 열립니다.', 3200);
+      });
+    } else {
+      showPopup('⛶ iPhone Safari는 공유 버튼 → "홈 화면에 추가"로<br>실행하면 전체화면으로 열립니다.', 3200);
+    }
+  } else {
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+    if(exit) exit.call(document);
+    if(btn) btn.textContent='⛶ 전체화면';
+  }
+}
+document.addEventListener('fullscreenchange', ()=>{
+  const btn = document.getElementById('fullscreen-btn');
+  if(btn) btn.textContent = document.fullscreenElement ? '⛶ 전체화면 종료' : '⛶ 전체화면';
+});
+document.addEventListener('webkitfullscreenchange', ()=>{
+  const btn = document.getElementById('fullscreen-btn');
+  if(btn) btn.textContent = document.webkitFullscreenElement ? '⛶ 전체화면 종료' : '⛶ 전체화면';
+});
+// 홈 화면에 추가되어 실행 중(iOS standalone)이면 버튼 숨김 - 이미 전체화면 상태이므로 불필요
+if(window.navigator.standalone === true){
+  const btn = document.getElementById('fullscreen-btn');
+  if(btn) btn.style.display='none';
+}
 
 let resizeRenderTimer=null;
 function scheduleResize(){
