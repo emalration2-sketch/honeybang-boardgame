@@ -16,14 +16,16 @@
     --text:#eef0ff; --dim:#8b90b3; --danger:#ff5470; --good:#39d98a;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{ height:100%; }
   html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; overflow-x:hidden; }
   body{
-    margin:0; overflow-x:hidden; font-family:'Segoe UI',Pretendard,sans-serif; background:radial-gradient(circle at 50% 0%,#1a1d2e,#0b0c14 70%);
-    color:var(--text); min-height:100vh; padding:16px; font-size:15px;
+    margin:0; overflow:hidden; display:flex; flex-direction:column; font-family:'Segoe UI',Pretendard,sans-serif; background:radial-gradient(circle at 50% 0%,#1a1d2e,#0b0c14 70%);
+    color:var(--text); padding:10px; font-size:15px;
     -webkit-user-select:none; user-select:none;
-    padding-left:calc(16px + env(safe-area-inset-left));
-    padding-right:calc(16px + env(safe-area-inset-right));
-    padding-bottom:calc(16px + env(safe-area-inset-bottom));
+    padding-left:calc(10px + env(safe-area-inset-left));
+    padding-right:calc(10px + env(safe-area-inset-right));
+    padding-bottom:calc(10px + env(safe-area-inset-bottom));
+    padding-top:calc(10px + env(safe-area-inset-top));
   }
   button{ cursor:pointer; touch-action:manipulation; -webkit-touch-callout:none; border-radius:9px; padding:10px 16px; font-size:13.5px; font-weight:600; background:var(--panel2); color:var(--text); border:1px solid var(--line); }
   button:hover:not(:disabled){ background:#2c3155; }
@@ -31,13 +33,9 @@
   button.primary{ background:linear-gradient(135deg,#ffd76b,#ff9f4a); color:#221400; border:none;}
   button.danger{ background:linear-gradient(135deg,#ff5470,#c0355a); color:#fff; border:none;}
   button.ghost{ background:transparent; }
-  h1{ text-align:center; font-size:23px; letter-spacing:.5px; margin:2px 0 4px; color:var(--gold); text-shadow:0 0 16px rgba(255,215,107,.45); animation:titleGlow 2.4s ease-in-out 1; }
-  .sub{ text-align:center; font-size:11.5px; color:var(--dim); margin-bottom:12px; }
-  @keyframes titleGlow{ 0%,100%{ text-shadow:0 0 16px rgba(255,215,107,.45);} 50%{ text-shadow:0 0 26px rgba(255,215,107,.8);} }
-  .app{ display:flex; gap:16px; max-width:1500px; margin:0 auto; align-items:flex-start; }
-  .side-stack{ display:flex; flex-direction:column; gap:12px; width:190px; flex-shrink:0; }
+  .app{ display:flex; gap:12px; flex:1; min-height:0; align-items:stretch; }
+  .sidebar{ width:280px; flex-shrink:0; display:flex; flex-direction:column; gap:8px; overflow-y:auto; min-height:0; }
   .side{ width:100%; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:13px; flex-shrink:0; }
-  .center{ flex:1; display:flex; flex-direction:column; gap:12px; min-width:0;}
   .avatar-box{ text-align:center; margin-bottom:6px; }
   .avatar{ font-size:48px; line-height:1; filter:drop-shadow(0 0 12px currentColor); display:inline-block;}
   .p1 .avatar{ color:var(--p1); } .p2 .avatar{ color:var(--p2); }
@@ -64,7 +62,7 @@
   .tile.edge-right .tip{ left:auto; right:0; transform:none; }
   .skill-chip:hover .tip, .tile:hover .tip, .honey-wrap:hover .tip, .skills-title:hover .tip, .codex-btn:hover .tip,
   .skill-chip.show-tip .tip, .tile.show-tip .tip, .honey-wrap.show-tip .tip, .skills-title.show-tip .tip, .codex-btn.show-tip .tip{ opacity:1; visibility:visible; }
-  #board-wrap{ position:relative; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; overflow:visible; display:flex; justify-content:center; }
+  #board-wrap{ position:relative; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; overflow:visible; display:flex; justify-content:center; align-items:center; flex:1; min-width:0; min-height:0; }
   #board-viewport{ position:relative; overflow:visible; }
   #board{ position:relative; transform-origin:top left; }
   .board-shake{ animation: bigShake .5s ease; }
@@ -96,13 +94,13 @@
   .token{ position:absolute; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; border:2px solid; background:#0c0d14; z-index:10; transition:.18s;}
   .token.tok-p1{ border-color:var(--p1); color:var(--p1); box-shadow:0 0 8px var(--p1);}
   .token.tok-p2{ border-color:var(--p2); color:var(--p2); box-shadow:0 0 8px var(--p2);}
-  #controls{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; min-height:110px; }
+  #controls{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; min-height:110px; flex-shrink:0; }
   .controls-flex{ display:flex; gap:12px; align-items:flex-start; }
   .controls-main{ flex:1; min-width:0; }
   .controls-codex{ display:flex; flex-direction:column; gap:7px; width:120px; flex-shrink:0; }
   .codex-btn{ position:relative; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:11px 6px; text-align:center; font-size:11px; font-weight:700; cursor:default; }
   .codex-tip{ left:auto; right:0; transform:none; bottom:100%; margin-bottom:8px; width:280px; text-align:left; font-size:11.5px; line-height:1.6; }
-  #log{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:10px 14px; height:110px; overflow-y:auto; font-size:12px; color:var(--dim); }
+  #log{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:10px 14px; height:90px; overflow-y:auto; font-size:12px; color:var(--dim); flex-shrink:0; }
   #log div{ margin:3px 0; }
   .row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:9px; align-items:center;}
   .msg-turn{ font-weight:700; color:var(--gold); font-size:14.5px; margin-bottom:3px;}
@@ -119,7 +117,7 @@
   .char-card .cname{ font-weight:700; margin-top:5px; font-size:11px; }
   .char-card .cdesc{ font-size:9.5px; color:var(--dim); margin-top:3px; }
   .encounter-box{ background:#00000030; border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-top:8px; font-size:13px;}
-  .commit-row{ display:flex; align-items:center; gap:10px; margin-top:8px; }
+  .commit-row{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:8px; }
   .commit-num{ font-size:22px; font-weight:800; color:var(--honey); min-width:44px; text-align:center; }
   .float-fx{ position:absolute; top:-6px; left:50%; transform:translateX(-50%); font-weight:800; font-size:13px; pointer-events:none; animation:floatUp 1s ease-out forwards; z-index:60; white-space:nowrap;}
   .float-fx.pos{ color:var(--good); text-shadow:0 0 6px var(--good);}
@@ -154,12 +152,10 @@
   .result.draw{ color:#9aa3c9; text-shadow:0 0 14px #9aa3c9;}
 
   @media (max-height: 500px) and (orientation: landscape){
-    body{ padding:4px; font-size:12px; }
-    h1{ font-size:13px; margin:0; } .sub{ font-size:8.5px; margin-bottom:4px; }
+    body{ padding:5px; font-size:12px; }
     .app{ gap:6px; }
-    .side-stack{ width:132px; gap:4px; }
+    .sidebar{ width:180px; gap:4px; }
     .side{ padding:5px; }
-    .center{ gap:5px; }
     .avatar-box{ margin-bottom:2px; }
     .avatar{ font-size:18px; } .pname{ font-size:7.5px; margin-top:2px; }
     .ring-tag{ font-size:7.5px; padding:1px 6px; margin-top:2px; }
@@ -168,9 +164,13 @@
     .gold-line{ font-size:8.5px; margin-top:3px; }
     .skills-title{ font-size:7.5px; margin-top:3px; }
     .skill-slots{ display:none; }
-    #board-wrap{ padding:6px; }
-    .controls-codex{ width:70px; } #log{ height:34px; font-size:9px; padding:4px 8px; }
-    #controls{ padding:6px; } button{ padding:5px 8px; font-size:10.5px; }
+    #board-wrap{ padding:5px; }
+    .controls-flex{ flex-direction:column; }
+    .controls-codex{ width:100%; flex-direction:row; }
+    .codex-btn{ padding:6px 4px; }
+    #log{ height:70px; font-size:8.5px; padding:4px 6px; }
+    #controls{ padding:5px; } button{ padding:4px 6px; font-size:9.5px; }
+    .commit-row{ gap:5px; } .commit-num{ font-size:16px; min-width:26px; }
   }
   #rotate-hint{ display:none; position:fixed; inset:0; background:#05060c; z-index:9999; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:20px; }
   #rotate-hint .icon{ font-size:52px; animation:rotateHintSpin 1.8s ease-in-out 4; }
@@ -183,20 +183,16 @@
 </head>
 <body>
 <div id="rotate-hint"><div class="icon">📱</div><div style="font-weight:700;font-size:16px;">화면을 가로로 돌려주세요</div><div style="font-size:12px;color:var(--dim);">이 게임은 가로 모드에 최적화되어 있습니다</div></div>
-<h1>🍯 허니뱅의 우주 참교육 대모험</h1>
-<div class="sub">오리온 결계 · 디스트로이어 오리온을 처치해야 승리</div>
 <div class="app">
-  <div class="side-stack">
+  <div class="sidebar">
     <div class="side" id="panel-p1"></div>
     <div class="side" id="panel-p2"></div>
-  </div>
-  <div class="center">
-    <div id="board-wrap">
-      <div id="board-viewport"><div id="board"></div></div>
-      <div id="board-popup" class="board-popup"><div class="popup-card" id="popup-card"></div></div>
-    </div>
     <div id="controls"></div>
     <div id="log"></div>
+  </div>
+  <div id="board-wrap">
+    <div id="board-viewport"><div id="board"></div></div>
+    <div id="board-popup" class="board-popup"><div class="popup-card" id="popup-card"></div></div>
   </div>
 </div>
 <div id="overlay"><div class="card" id="overlay-card"></div></div>
@@ -910,13 +906,8 @@ function tileTip(node, ring){
 function fitBoardScale(){
   const wrap = document.getElementById('board-wrap');
   const availW = Math.max(180, wrap.clientWidth - 16);
-  const h1El = document.querySelector('h1');
-  const subEl = document.querySelector('.sub');
-  const controlsEl = document.getElementById('controls');
-  const logEl = document.getElementById('log');
-  const chromeH = (h1El?h1El.offsetHeight:0) + (subEl?subEl.offsetHeight:0) + (controlsEl?controlsEl.offsetHeight:0) + (logEl?logEl.offsetHeight:0) + 70;
-  const availH = Math.max(140, window.innerHeight - chromeH);
-  return Math.min(availW/DESIGN_W, availH/DESIGN_H, 1.3);
+  const availH = Math.max(140, wrap.clientHeight - 16);
+  return Math.min(availW/DESIGN_W, availH/DESIGN_H, 1.5);
 }
 function renderBoard(){
   const board = document.getElementById('board');
