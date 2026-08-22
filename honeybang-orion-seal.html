@@ -151,26 +151,32 @@
   .result.lose{ color:var(--danger); text-shadow:0 0 14px var(--danger);}
   .result.draw{ color:#9aa3c9; text-shadow:0 0 14px #9aa3c9;}
 
-  @media (max-height: 500px) and (orientation: landscape){
-    body{ padding:5px; font-size:12px; }
-    .app{ gap:6px; }
-    .sidebar{ width:180px; gap:4px; }
-    .side{ padding:5px; }
-    .avatar-box{ margin-bottom:2px; }
-    .avatar{ font-size:18px; } .pname{ font-size:7.5px; margin-top:2px; }
-    .ring-tag{ font-size:7.5px; padding:1px 6px; margin-top:2px; }
-    .stat-row{ font-size:7.5px; margin:3px 0 1px; }
-    .honey-bar{ height:7px; }
-    .gold-line{ font-size:8.5px; margin-top:3px; }
-    .skills-title{ font-size:7.5px; margin-top:3px; }
+  @media (max-height: 560px) and (orientation: landscape){
+    body{ padding:4px; font-size:11px; }
+    .app{ gap:5px; }
+    .sidebar{ width:172px; gap:3px; }
+    .side{ padding:4px 6px; display:flex; flex-wrap:wrap; align-items:center; gap:0 6px; border-radius:10px; }
+    .avatar-box{ margin-bottom:0; text-align:left; flex-shrink:0; }
+    .avatar{ font-size:20px; }
+    .pname{ font-size:7px; margin-top:0; white-space:nowrap; max-width:70px; overflow:hidden; text-overflow:ellipsis; }
+    .ring-tag{ font-size:6.5px; padding:0px 4px; margin-top:0; }
+    .stat-row{ font-size:7px; margin:0; width:auto; flex:1 1 auto; min-width:60px; }
+    .honey-wrap{ width:100%; order:5; }
+    .honey-bar{ height:5px; }
+    .gold-line{ font-size:7.5px; margin-top:0; }
+    .skills-title{ display:none; }
     .skill-slots{ display:none; }
-    #board-wrap{ padding:5px; }
-    .controls-flex{ flex-direction:column; }
-    .controls-codex{ width:100%; flex-direction:row; }
-    .codex-btn{ padding:6px 4px; }
-    #log{ height:70px; font-size:8.5px; padding:4px 6px; }
-    #controls{ padding:5px; } button{ padding:4px 6px; font-size:9.5px; }
-    .commit-row{ gap:5px; } .commit-num{ font-size:16px; min-width:26px; }
+    #board-wrap{ padding:4px; }
+    .controls-flex{ flex-direction:column; gap:4px; }
+    .controls-codex{ width:100%; flex-direction:row; gap:4px; }
+    .codex-btn{ padding:3px 4px; font-size:9px; }
+    #log{ height:44px; font-size:7.5px; padding:3px 5px; line-height:1.3; }
+    #log div{ margin:1px 0; }
+    #controls{ padding:4px; min-height:0; } button{ padding:3px 5px; font-size:9px; }
+    .msg-turn{ font-size:10px; margin-bottom:0; }
+    .encounter-box{ padding:4px 6px; margin-top:3px; }
+    .commit-row{ gap:4px; margin-top:3px; } .commit-num{ font-size:13px; min-width:18px; }
+    .row{ gap:5px; margin-top:3px; }
   }
   #rotate-hint{ display:none; position:fixed; inset:0; background:#05060c; z-index:9999; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:20px; }
   #rotate-hint .icon{ font-size:52px; animation:rotateHintSpin 1.8s ease-in-out 4; }
@@ -853,12 +859,12 @@ function skipEvent(){
 }
 
 /* ================= Rendering ================= */
-const DESIGN_W=690, DESIGN_H=600;
-const CX=345, CY=300;
+const DESIGN_W=800, DESIGN_H=492;
+const CX=400, CY=246;
 const RING_GEOM = {
-  1: {halfW:293, halfH:238},
-  2: {halfW:218, halfH:163},
-  3: {halfW:140, halfH:85},
+  1: {halfW:360, halfH:195},
+  2: {halfW:235, halfH:134},
+  3: {halfW:155, halfH:70},
 };
 /**
  * 직사각형 둘레에 count개의 칸을 배치한다. 네 모서리(꼭짓점)에는 항상 정확히 1칸씩만 배치하고,
