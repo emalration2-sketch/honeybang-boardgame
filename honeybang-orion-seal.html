@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>허니뱅의 우주 참교육 대모험 — 오리온 결계</title>
+<style>
+  :root{
+    --bg:#12131c; --panel:#1c1f2e; --panel2:#232742; --line:#39406b;
+    --p1:#4fc3f7; --p2:#ff7676; --gold:#ffd76b;
+    --honey:#ffb63d; --honey2:#ffd98a;
+    --goldc:#7fd8c0;
+    --text:#eef0ff; --dim:#8b90b3; --danger:#ff5470; --good:#39d98a;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; overflow-x:hidden; }
+  body{
+    margin:0; overflow-x:hidden; font-family:'Segoe UI',Pretendard,sans-serif; background:radial-gradient(circle at 50% 0%,#1a1d2e,#0b0c14 70%);
+    color:var(--text); min-height:100vh; padding:16px; font-size:15px;
+    -webkit-user-select:none; user-select:none;
+    padding-left:calc(16px + env(safe-area-inset-left));
+    padding-right:calc(16px + env(safe-area-inset-right));
+    padding-bottom:calc(16px + env(safe-area-inset-bottom));
+  }
+  button{ cursor:pointer; touch-action:manipulation; -webkit-touch-callout:none; border-radius:9px; padding:10px 16px; font-size:13.5px; font-weight:600; background:var(--panel2); color:var(--text); border:1px solid var(--line); }
+  button:hover:not(:disabled){ background:#2c3155; }
+  button:disabled{ opacity:.35; cursor:not-allowed; }
+  button.primary{ background:linear-gradient(135deg,#ffd76b,#ff9f4a); color:#221400; border:none;}
+  button.danger{ background:linear-gradient(135deg,#ff5470,#c0355a); color:#fff; border:none;}
+  button.ghost{ background:transparent; }
+  h1{ text-align:center; font-size:23px; letter-spacing:.5px; margin:2px 0 4px; color:var(--gold); text-shadow:0 0 16px rgba(255,215,107,.45); animation:titleGlow 2.4s ease-in-out 1; }
+  .sub{ text-align:center; font-size:11.5px; color:var(--dim); margin-bottom:12px; }
+  @keyframes titleGlow{ 0%,100%{ text-shadow:0 0 16px rgba(255,215,107,.45);} 50%{ text-shadow:0 0 26px rgba(255,215,107,.8);} }
+  .app{ display:flex; gap:16px; max-width:1500px; margin:0 auto; align-items:flex-start; }
+  .side-stack{ display:flex; flex-direction:column; gap:12px; width:190px; flex-shrink:0; }
+  .side{ width:100%; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:13px; flex-shrink:0; }
+  .center{ flex:1; display:flex; flex-direction:column; gap:12px; min-width:0;}
+  .avatar-box{ text-align:center; margin-bottom:6px; }
+  .avatar{ font-size:48px; line-height:1; filter:drop-shadow(0 0 12px currentColor); display:inline-block;}
+  .p1 .avatar{ color:var(--p1); } .p2 .avatar{ color:var(--p2); }
+  .pname{ font-weight:700; margin-top:5px; font-size:13px; }
+  .ring-tag{ font-size:10.5px; font-weight:700; display:inline-block; padding:3px 9px; border-radius:10px; margin-top:5px; }
+  .ring-tag.r1{ background:#1c3a5a; color:#7fc4ff; } .ring-tag.r2{ background:#1c4a3a; color:#7fe0b0; }
+  .ring-tag.r3{ background:#4a1c5a; color:#d59aff; } .ring-tag.r0{ background:#5a3a1c; color:var(--gold); }
+  .active-turn{ box-shadow:0 0 0 3px var(--gold), 0 0 24px rgba(255,215,107,.45); }
+  .stat-row{ display:flex; justify-content:space-between; font-size:11px; color:var(--dim); margin:9px 0 3px; font-weight:600; }
+  .honey-wrap{ position:relative; cursor:default; }
+  .honey-bar{ height:16px; border-radius:8px; background:#2a1c0e; border:1px solid #5a3a1c; overflow:hidden; }
+  .honey-fill{ height:100%; background:linear-gradient(90deg,var(--honey),var(--honey2)); box-shadow:0 0 8px var(--honey); transition:width .4s ease; }
+  .gold-line{ position:relative; font-size:13.5px; margin-top:9px; color:var(--goldc); font-weight:700; cursor:default;}
+  .skills-title{ position:relative; font-size:10.5px; color:var(--dim); margin-top:10px; font-weight:600; letter-spacing:.5px; cursor:default; display:inline-block;}
+  .skill-slots{ display:flex; gap:5px; flex-wrap:wrap; margin-top:5px;}
+  .skill-chip{ position:relative; font-size:9.5px; background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:6px 4px; display:flex; flex-direction:column; align-items:center; width:54px; cursor:default;}
+  .skill-chip b{ font-size:9.5px; margin-top:2px;}
+  .skill-chip .ico{ font-size:16px; }
+  .skill-chip.armed{ border-color:var(--gold); box-shadow:0 0 8px rgba(255,215,107,.4); }
+  .skill-slot.empty{ width:54px; height:38px; border:1px dashed #ffffff20; border-radius:8px; }
+  .tip{ position:absolute; bottom:100%; left:50%; transform:translateX(-50%); margin-bottom:8px; background:#05060c; border:1px solid var(--line); color:var(--text); font-size:11px; line-height:1.5; padding:8px 10px; border-radius:10px; width:190px; text-align:center; opacity:0; visibility:hidden; transition:opacity .15s; pointer-events:none; z-index:99999; box-shadow:0 6px 18px rgba(0,0,0,.55);}
+  .tile.edge-bottom .tip{ bottom:auto; top:100%; margin-bottom:0; margin-top:8px; }
+  .tile.edge-left .tip{ left:0; transform:none; }
+  .tile.edge-right .tip{ left:auto; right:0; transform:none; }
+  .skill-chip:hover .tip, .tile:hover .tip, .honey-wrap:hover .tip, .skills-title:hover .tip, .codex-btn:hover .tip,
+  .skill-chip.show-tip .tip, .tile.show-tip .tip, .honey-wrap.show-tip .tip, .skills-title.show-tip .tip, .codex-btn.show-tip .tip{ opacity:1; visibility:visible; }
+  #board-wrap{ position:relative; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; overflow:visible; display:flex; justify-content:center; }
+  #board-viewport{ position:relative; overflow:visible; }
+  #board{ position:relative; transform-origin:top left; }
+  .board-shake{ animation: bigShake .5s ease; }
+  @keyframes bigShake{ 0%,100%{transform:translate(0,0);} 20%{transform:translate(-8px,3px);} 40%{transform:translate(8px,-3px);} 60%{transform:translate(-6px,3px);} 80%{transform:translate(6px,-3px);} }
+  .ring-track{ position:absolute; border-radius:26px; pointer-events:none; box-shadow:inset 0 0 34px rgba(0,0,0,.3); }
+  .ring-track.r1{ background:rgba(79,195,247,.04); border:6px solid #4fc3f7; }
+  .ring-track.r2{ background:rgba(181,138,255,.045); border:6px solid #b58aff; }
+  .ring-track.r3{ background:rgba(255,107,107,.05); border:6px solid #ff6b6b; }
+  .ring-badge{ position:absolute; font-size:11px; font-weight:800; letter-spacing:.5px; padding:4px 10px; border-radius:9px; background:#05060c; pointer-events:none; z-index:3; white-space:nowrap; }
+  .ring-badge.r1{ color:#4fc3f7; border:2px solid #4fc3f7; } .ring-badge.r2{ color:#b58aff; border:2px solid #b58aff; } .ring-badge.r3{ color:#ff6b6b; border:2px solid #ff6b6b; }
+  .tile{ position:absolute; background:var(--panel2); border:3px solid var(--line); border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; font-size:19px; box-shadow:0 3px 8px rgba(0,0,0,.35); -webkit-touch-callout:none; touch-action:manipulation; }
+  .tile .tlabel{ font-size:7.5px; font-weight:700; color:var(--dim); line-height:1.1; max-width:94%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tile.gold{ background:linear-gradient(160deg,#0f2a24,#1c1f2e); }
+  .tile.secretshop{ background:linear-gradient(160deg,#2a1433,#1c1f2e); }
+  .tile.portal{ background:linear-gradient(160deg,#141a33,#1c1f2e); }
+  .tile.island{ background:linear-gradient(160deg,#142a2a,#1c1f2e); }
+  .tile.ring1{ border-color:#4fc3f7; box-shadow:0 3px 8px rgba(0,0,0,.35), inset 0 0 0 60px rgba(79,195,247,.09); }
+  .tile.ring2{ border-color:#b58aff; box-shadow:0 3px 8px rgba(0,0,0,.35), inset 0 0 0 60px rgba(181,138,255,.1); }
+  .tile.ring3{ border-color:#ff6b6b; box-shadow:0 3px 8px rgba(0,0,0,.35), inset 0 0 0 60px rgba(255,107,107,.09); }
+  .tile.orion{ border-color:var(--gold); border-width:4px; box-shadow:0 0 30px rgba(255,215,107,.55),0 3px 8px rgba(0,0,0,.4); background:linear-gradient(160deg,#2a2210,#1c1f2e); z-index:5; }
+  .tile.start{ background:linear-gradient(160deg,#2a2210,#1c1f2e); }
+  .tile.honey{ background:linear-gradient(160deg,#241c10,#1c1f2e); }
+  .tile.trap{ background:linear-gradient(160deg,#2a1414,#1c1f2e); }
+  .tile.mzone{ background:linear-gradient(160deg,#1a2414,#1c1f2e); }
+  .tile.shop{ background:linear-gradient(160deg,#241f14,#1c1f2e); }
+  .tile.selectable{ box-shadow:0 0 0 3px var(--good); cursor:pointer; }
+  @keyframes landedPulse{ 0%{box-shadow:0 0 0 0 rgba(255,215,107,.9);} 100%{box-shadow:0 0 22px 8px rgba(255,215,107,0);} }
+  .tile.landed-flash{ animation: landedPulse .7s ease-out; }
+  .token{ position:absolute; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; border:2px solid; background:#0c0d14; z-index:10; transition:.18s;}
+  .token.tok-p1{ border-color:var(--p1); color:var(--p1); box-shadow:0 0 8px var(--p1);}
+  .token.tok-p2{ border-color:var(--p2); color:var(--p2); box-shadow:0 0 8px var(--p2);}
+  #controls{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; min-height:110px; }
+  .controls-flex{ display:flex; gap:12px; align-items:flex-start; }
+  .controls-main{ flex:1; min-width:0; }
+  .controls-codex{ display:flex; flex-direction:column; gap:7px; width:120px; flex-shrink:0; }
+  .codex-btn{ position:relative; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:11px 6px; text-align:center; font-size:11px; font-weight:700; cursor:default; }
+  .codex-tip{ left:auto; right:0; transform:none; bottom:100%; margin-bottom:8px; width:280px; text-align:left; font-size:11.5px; line-height:1.6; }
+  #log{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:10px 14px; height:110px; overflow-y:auto; font-size:12px; color:var(--dim); }
+  #log div{ margin:3px 0; }
+  .row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:9px; align-items:center;}
+  .msg-turn{ font-weight:700; color:var(--gold); font-size:14.5px; margin-bottom:3px;}
+  .thinking{ color:var(--p2); font-style:italic; margin-top:6px;}
+  #overlay{ position:fixed; inset:0; background:#000000cc; display:none; align-items:center; justify-content:center; z-index:9999; padding:20px; }
+  #overlay .card{ background:var(--panel); border:2px solid var(--gold); border-radius:20px; padding:36px 44px; text-align:center; box-shadow:0 0 70px rgba(255,215,107,.5); max-width:94vw; max-height:90vh; overflow-y:auto; }
+  #overlay .card.victory-glow{ animation:victoryPulse 1.4s ease-in-out 3; }
+  @keyframes victoryPulse{ 0%,100%{ box-shadow:0 0 50px rgba(255,215,107,.5);} 50%{ box-shadow:0 0 90px rgba(255,215,107,.9);} }
+  #overlay h2{ font-size:25px; color:var(--gold); margin:0 0 10px; }
+  .char-grid{ display:flex; flex-wrap:wrap; gap:11px; justify-content:center; margin-top:13px; max-width:540px; }
+  .char-card{ background:var(--panel2); border:2px solid var(--line); border-radius:16px; padding:12px 14px; cursor:pointer; transition:.15s; text-align:center; width:110px;}
+  .char-card:hover{ border-color:var(--gold); transform:translateY(-4px); box-shadow:0 8px 24px rgba(255,215,107,.25); }
+  .char-card .cico{ font-size:38px; }
+  .char-card .cname{ font-weight:700; margin-top:5px; font-size:11px; }
+  .char-card .cdesc{ font-size:9.5px; color:var(--dim); margin-top:3px; }
+  .encounter-box{ background:#00000030; border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-top:8px; font-size:13px;}
+  .commit-row{ display:flex; align-items:center; gap:10px; margin-top:8px; }
+  .commit-num{ font-size:22px; font-weight:800; color:var(--honey); min-width:44px; text-align:center; }
+  .float-fx{ position:absolute; top:-6px; left:50%; transform:translateX(-50%); font-weight:800; font-size:13px; pointer-events:none; animation:floatUp 1s ease-out forwards; z-index:60; white-space:nowrap;}
+  .float-fx.pos{ color:var(--good); text-shadow:0 0 6px var(--good);}
+  .float-fx.neg{ color:var(--danger); text-shadow:0 0 6px var(--danger);}
+  @keyframes floatUp{ 0%{ transform:translate(-50%,0); opacity:1;} 100%{ transform:translate(-50%,-34px); opacity:0;} }
+  .shop-item{ background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:9px; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12px; gap:8px;}
+  .badge{ font-size:10px; padding:2px 6px; border-radius:7px; background:#00000040; }
+
+  .board-popup{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .2s; z-index:45; background:rgba(0,0,0,0.4); border-radius:16px;}
+  .board-popup.show{ opacity:1; pointer-events:auto; }
+  .popup-card{ background:#05060cf2; border:2px solid var(--gold); border-radius:16px; padding:18px 26px; text-align:center; font-weight:700; font-size:15px; box-shadow:0 10px 34px rgba(0,0,0,.6); min-width:200px; color:var(--text); transition:box-shadow .3s;}
+  .dice-title{ font-size:12px; color:var(--dim); margin-bottom:7px; font-weight:600;}
+  .dice-face-lg{ font-size:50px; line-height:1; }
+  .dice-face-lg.rolling{ animation:tumble .22s linear infinite; }
+  @keyframes tumble{ 0%{transform:rotate(0deg) translateY(0);} 25%{transform:rotate(90deg) translateY(-10px);} 50%{transform:rotate(180deg) translateY(0);} 75%{transform:rotate(270deg) translateY(-10px);} 100%{transform:rotate(360deg) translateY(0);} }
+  .dice-face-lg.settle{ animation:settlePop .45s ease; }
+  @keyframes settlePop{ 0%{transform:scale(1.5) rotate(0deg);} 60%{transform:scale(0.85);} 100%{transform:scale(1);} }
+  .battle-title{ font-size:17px; font-weight:800; color:var(--gold); margin-bottom:10px; text-shadow:0 0 10px rgba(255,215,107,.5); }
+  .battle-vs{ display:flex; align-items:center; gap:18px; justify-content:center; }
+  .battler{ display:flex; flex-direction:column; align-items:center; font-size:40px; }
+  .battler .bp{ font-size:15px; margin-top:5px; font-weight:800; }
+  .battler .bn{ font-size:9.5px; color:var(--dim); margin-top:2px; max-width:100px; }
+  .clash{ font-size:28px; animation:clashPulse .3s ease-in-out infinite; }
+  @keyframes clashPulse{ 0%,100%{transform:scale(1) rotate(0deg);} 50%{transform:scale(1.4) rotate(-20deg);} }
+  .clash-msg{ font-size:12px; color:var(--gold); font-weight:800; margin-top:7px; animation:pulseTag .35s ease-in-out infinite; }
+  @keyframes pulseTag{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.15);} }
+  .battle-shake{ animation:shake .08s linear infinite; }
+  @keyframes shake{ 0%{transform:translate(0,0);} 25%{transform:translate(-5px,3px);} 50%{transform:translate(5px,-3px);} 75%{transform:translate(-4px,-4px);} 100%{transform:translate(4px,4px);} }
+  .result{ font-size:22px; }
+  .result.win{ color:var(--good); text-shadow:0 0 14px var(--good);}
+  .result.lose{ color:var(--danger); text-shadow:0 0 14px var(--danger);}
+  .result.draw{ color:#9aa3c9; text-shadow:0 0 14px #9aa3c9;}
+
+  @media (max-height: 500px) and (orientation: landscape){
+    body{ padding:4px; font-size:12px; }
+    h1{ font-size:13px; margin:0; } .sub{ font-size:8.5px; margin-bottom:4px; }
+    .app{ gap:6px; }
+    .side-stack{ width:132px; gap:4px; }
+    .side{ padding:5px; }
+    .center{ gap:5px; }
+    .avatar-box{ margin-bottom:2px; }
+    .avatar{ font-size:18px; } .pname{ font-size:7.5px; margin-top:2px; }
+    .ring-tag{ font-size:7.5px; padding:1px 6px; margin-top:2px; }
+    .stat-row{ font-size:7.5px; margin:3px 0 1px; }
+    .honey-bar{ height:7px; }
+    .gold-line{ font-size:8.5px; margin-top:3px; }
+    .skills-title{ font-size:7.5px; margin-top:3px; }
+    .skill-slots{ display:none; }
+    #board-wrap{ padding:6px; }
+    .controls-codex{ width:70px; } #log{ height:34px; font-size:9px; padding:4px 8px; }
+    #controls{ padding:6px; } button{ padding:5px 8px; font-size:10.5px; }
+  }
+  #rotate-hint{ display:none; position:fixed; inset:0; background:#05060c; z-index:9999; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:20px; }
+  #rotate-hint .icon{ font-size:52px; animation:rotateHintSpin 1.8s ease-in-out 4; }
+  @keyframes rotateHintSpin{ 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(90deg);} }
+  @media (orientation:portrait){
+    #rotate-hint{ display:flex; }
+    .app{ display:none; }
+  }
+</style>
+</head>
+<body>
+<div id="rotate-hint"><div class="icon">📱</div><div style="font-weight:700;font-size:16px;">화면을 가로로 돌려주세요</div><div style="font-size:12px;color:var(--dim);">이 게임은 가로 모드에 최적화되어 있습니다</div></div>
+<h1>🍯 허니뱅의 우주 참교육 대모험</h1>
+<div class="sub">오리온 결계 · 디스트로이어 오리온을 처치해야 승리</div>
+<div class="app">
+  <div class="side-stack">
+    <div class="side" id="panel-p1"></div>
+    <div class="side" id="panel-p2"></div>
+  </div>
+  <div class="center">
+    <div id="board-wrap">
+      <div id="board-viewport"><div id="board"></div></div>
+      <div id="board-popup" class="board-popup"><div class="popup-card" id="popup-card"></div></div>
+    </div>
+    <div id="controls"></div>
+    <div id="log"></div>
+  </div>
+</div>
+<div id="overlay"><div class="card" id="overlay-card"></div></div>
+
+<script>
+/* ================= Pacing / utils ================= */
+const PACE = 1.5;
+function wait(ms){ return new Promise(res=>setTimeout(res, ms*PACE)); }
+function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+/* ================= Ring / board data (4안 룰북 기준) ================= */
+const ORION_POWER = 40;
+const MAX_HONEY = 35;
+const TRAP_PENALTY = 3;
+const MONSTER_LOSS_PCT = 0.3;
+const MAX_ITEM_SLOTS = 4;
+const PVP_STEAL = 3;
+
+const RINGS = {
+  1: { size:29, gain:2, gate:10,
+    tiles:[
+      {t:'start', label:'출발', icon:'🏁'},
+      {t:'portal', label:'차원문', icon:'🌌'},
+      {t:'monster', label:'폭주 다람쥐', icon:'🐿️', power:3},
+      {t:'monster', label:'폭주 까마귀', icon:'🐦‍⬛', power:6},
+      {t:'monster', label:'폭주 다람쥐', icon:'🐿️', power:3},
+      {t:'monster', label:'폭주 까마귀', icon:'🐦‍⬛', power:6},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'gold', label:'돈 주머니', icon:'💰', amount:5},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'shop', label:'아이템 상점', icon:'🛍️'},
+      {t:'trap', label:'트랩', icon:'🪤'},
+      {t:'monster', label:'폭주 다람쥐', icon:'🐿️', power:3},
+      {t:'monster', label:'폭주 까마귀', icon:'🐦‍⬛', power:6},
+      {t:'monster', label:'폭주 다람쥐', icon:'🐿️', power:3},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'gold', label:'돈 주머니', icon:'💰', amount:5},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'shop', label:'아이템 상점', icon:'🛍️'},
+      {t:'trap', label:'트랩', icon:'🪤'},
+      {t:'monster', label:'폭주 까마귀', icon:'🐦‍⬛', power:6},
+      {t:'monster', label:'폭주 다람쥐', icon:'🐿️', power:3},
+      {t:'monster', label:'폭주 까마귀', icon:'🐦‍⬛', power:6},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'gold', label:'돈 주머니', icon:'💰', amount:5},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'shop', label:'아이템 상점', icon:'🛍️'},
+      {t:'trap', label:'트랩', icon:'🪤'},
+      {t:'island', label:'무인도', icon:'🏝️'},
+      {t:'secretshop', label:'비밀 상점', icon:'🔮'},
+    ]},
+  2: { size:19, gain:4, gate:20,
+    tiles:[
+      {t:'start', label:'출발', icon:'🏁'},
+      {t:'portal', label:'차원문', icon:'🌌'},
+      {t:'monster', label:'메카 전갈', icon:'🦂', power:9},
+      {t:'monster', label:'폭주 코뿔소 대장', icon:'🦏', power:14},
+      {t:'monster', label:'메카 전갈', icon:'🦂', power:9},
+      {t:'monster', label:'폭주 코뿔소 대장', icon:'🦏', power:14},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'gold', label:'돈 주머니', icon:'💰', amount:5},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'shop', label:'아이템 상점', icon:'🛍️'},
+      {t:'trap', label:'트랩', icon:'🪤'},
+      {t:'monster', label:'메카 전갈', icon:'🦂', power:9},
+      {t:'monster', label:'폭주 코뿔소 대장', icon:'🦏', power:14},
+      {t:'monster', label:'메카 전갈', icon:'🦂', power:9},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'gold', label:'돈 주머니', icon:'💰', amount:5},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'shop', label:'아이템 상점', icon:'🛍️'},
+      {t:'trap', label:'트랩', icon:'🪤'},
+    ]},
+  3: { size:12, gain:8, gate:35,
+    tiles:[
+      {t:'start', label:'출발', icon:'🏁'},
+      {t:'portal', label:'차원문', icon:'🌌'},
+      {t:'monster', label:'심연 상어', icon:'🦈', power:20},
+      {t:'monster', label:'메카 히드라', icon:'🐍', power:28},
+      {t:'monster', label:'심연 상어', icon:'🦈', power:20},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'shop', label:'아이템 상점', icon:'🛍️'},
+      {t:'monster', label:'메카 히드라', icon:'🐍', power:28},
+      {t:'monster', label:'메카 히드라', icon:'🐍', power:28},
+      {t:'honey', label:'허니 웅덩이', icon:'🍯'},
+      {t:'trap', label:'트랩', icon:'🪤'},
+    ]},
+};
+const ORION = {name:'디스트로이어 오리온', icon:'👾', power:ORION_POWER};
+
+const ITEM_DB = [
+  {id:'shield',   name:'보호막',        icon:'🛡️', price:20, desc:'다음 전투 패배 무효화'},
+  {id:'teleport', name:'순간이동 장치', icon:'🌀', price:10, desc:'같은 링 내 원하는 칸으로 즉시 이동'},
+  {id:'jelly',    name:'로열젤리',      icon:'🍼', price:20, desc:'이번 전투 한정 전투력 +2 (투입과 별개)'},
+  {id:'haste',    name:'축지법',        icon:'👟', price:10, desc:'이번 턴 이동거리 2배'},
+  {id:'hook',     name:'갈고리 사슬',   icon:'⛓️', price:10, desc:'같은 링 5칸 이내 상대를 끌어와 강제 PvP'},
+];
+const SECRET_ITEM_DB = [
+  {id:'honeypotion', name:'허니 영약',   icon:'🧪', price:50, desc:'구매 즉시 허니 +20 획득 (인벤토리 차지 안 함)', instant:true},
+  {id:'orioncharm',  name:'오리온의 인장', icon:'🔯', price:30, desc:'오리온 전투 한정 전투력 +3 (투입과 별개)'},
+];
+const itemById = id => ITEM_DB.find(i=>i.id===id) || SECRET_ITEM_DB.find(i=>i.id===id);
+
+const TIP_BY_TYPE = {
+  start: '이 칸을 지나가거나 도착할 때, 해당 링의 게이트 조건(허니)을 만족하면 자동으로 다음 링으로 승급',
+  honey: '고정 허니 획득 (링이 높을수록 많음)',
+  trap: '클릭 후 주사위 4 이상 → 회피 성공 / 3 이하 → 허니 -3 고정',
+  gold: '고정 골드 획득 (아이템 구매용 재화)',
+  shop: '골드로 아이템 구매 (최대 4슬롯, 종류당 1개)',
+  secretshop: '희귀 아이템 전용 상점 (허니 영약, 오리온의 인장)',
+  portal: '도착 시 다른 두 링의 차원문 중 하나를 선택해 즉시 이동',
+  island: '도착 시 무인도에 표류! 2턴간 휴식(행동 불가)',
+};
+
+/* ================= Characters ================= */
+const CHARACTERS = {
+  badger:   { name:'허니뱅', base:'🦡', desc:'우주 벌꿀을 쫓는 포악한 탐험가' },
+  robot:    { name:'메카닉 로봇', base:'🤖', desc:'고대 외계 병기 유닛' },
+  lion:     { name:'바코드 라이언', base:'🦁', desc:'탈모가 온 사자' },
+  penguin:  { name:'카이저 핑', base:'🐧', desc:'메카 슈트 펭귄' },
+  whale:    { name:'메가 블록 고래', base:'🐋', desc:'철갑 피부의 고래' },
+  kangaroo: { name:'크러셔 루', base:'🦘', desc:'음속 펀치 캥거루' },
+  cat:      { name:'고양이 예언자', base:'🐱', desc:'레이저 눈 고양이' },
+  dragon:   { name:'스파크-렉스', base:'🐉', desc:'참교육당한 메카 드래곤' },
+};
+function avatarFor(player){ return (CHARACTERS[player.character]||CHARACTERS.badger).base; }
+
+/* ================= State ================= */
+function newPlayer(id,name,isAI){
+  return {
+    id, name, isAI, character:null,
+    ring:1, pos:0, honey:0, gold:0, items:[],
+    shieldArmed:false, jellyArmed:false, hasteArmed:false, orionCharmArmed:false, skipTurns:0,
+  };
+}
+let state = {
+  players:[newPlayer(1,'Player 1',false), newPlayer(2,'AI Rival',true)],
+  turn:0, phase:'ROLL', logHistory:[], gameOver:false, started:false,
+  pendingShop:null, pendingCombat:null, selectMode:null, pendingTrap:false, pendingPortal:false,
+  animating:false, lastDie:null, fxQueue:[],
+};
+
+function log(msg){ state.logHistory.unshift(msg); if(state.logHistory.length>60) state.logHistory.pop(); }
+function other(p){ return state.players[1-state.players.indexOf(p)]; }
+function curTile(p){ if(p.ring===0) return {t:'orion', label:'오리온', icon:'👾'}; return RINGS[p.ring].tiles[p.pos]; }
+function ringDist(size,a,b){ const d=Math.abs(a-b); return Math.min(d,size-d); }
+
+function fx(playerId, stat, amount){ if(amount!==0) state.fxQueue.push({playerId,stat,amount}); }
+function addHoney(player, amt){
+  const before=player.honey;
+  player.honey=Math.min(MAX_HONEY, Math.max(0, player.honey+amt));
+  fx(player.id,'honey',player.honey-before);
+  if(amt>0 && player.ring>=1 && player.ring<=3){
+    const gate = RINGS[player.ring].gate;
+    const nextName = player.ring<3 ? `링${player.ring+1}` : '차원의 심장(오리온)';
+    if(before<gate && player.honey>=gate){
+      log(`🌟 ${player.name}: 허니 ${gate} 달성! 출발칸을 지나면 ${nextName}(으)로 승급합니다.`);
+    }
+  }
+  if(amt<0) checkDemotion(player);
+}
+function checkDemotion(player){
+  let demoted=false;
+  while(true){
+    if(player.ring===3 && player.honey<RINGS[2].gate){ player.ring=2; player.pos=0; demoted=true; continue; }
+    if(player.ring===2 && player.honey<RINGS[1].gate){ player.ring=1; player.pos=0; demoted=true; continue; }
+    break;
+  }
+  if(demoted){ log(`⬇️ ${player.name}: 허니 부족으로 링${player.ring} 출발점으로 강등!`); }
+}
+function addGold(player, amt){ const before=player.gold; player.gold=Math.max(0, player.gold+amt); fx(player.id,'gold',player.gold-before); }
+
+/* ================= Popup / animation system ================= */
+let popupTimer=null;
+function showPopup(html, duration=1100){
+  const wrap=document.getElementById('board-popup'), card=document.getElementById('popup-card');
+  card.className='popup-card'; card.innerHTML=html; wrap.classList.add('show');
+  clearTimeout(popupTimer);
+  if(duration>0){ popupTimer=setTimeout(()=>wrap.classList.remove('show'), duration*PACE); }
+}
+async function animateSingleDie(player, label){
+  const wrap=document.getElementById('board-popup'), card=document.getElementById('popup-card');
+  clearTimeout(popupTimer); card.className='popup-card';
+  card.innerHTML = `<div class="dice-title">${label||(player.name+'의 주사위')}</div><div class="dice-face-lg rolling" id="d1">🎲</div>`;
+  wrap.classList.add('show');
+  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  const el=card.querySelector('#d1');
+  for(let i=0;i<9;i++){ el.textContent=faces[rand(0,5)]; await wait(55+i*8); }
+  const d=rand(1,6);
+  el.textContent=faces[d-1]; el.classList.remove('rolling'); el.classList.add('settle');
+  await wait(500);
+  wrap.classList.remove('show');
+  return d;
+}
+async function showBattleAnimation(player, defenderIcon, atkPower, defPower, win, defenderName, isDraw=false, titleText='', resultWinnerName=null){
+  const wrap=document.getElementById('board-popup'), card=document.getElementById('popup-card');
+  clearTimeout(popupTimer); card.className='popup-card';
+  const titleHtml = titleText ? `<div class="battle-title">${titleText}</div>` : '';
+  card.innerHTML = `${titleHtml}<div class="battle-vs">
+      <div class="battler">${avatarFor(player)}<div class="bp" style="color:var(--honey)">${atkPower}</div><div class="bn">${player.name}</div></div>
+      <div class="clash">⚔️</div>
+      <div class="battler">${defenderIcon}<div class="bp" style="color:#ff8fa3">${defPower}</div>${defenderName?`<div class="bn">${defenderName}</div>`:''}</div>
+    </div><div class="clash-msg" id="cm">⚔️ 격돌!</div>`;
+  wrap.classList.add('show'); card.classList.add('battle-shake');
+  const msgs=['⚔️ 격돌!','💥 참교육 개시!','🔥 전력 질주!'];
+  const msgEl=card.querySelector('#cm');
+  for(const m of msgs){ if(msgEl) msgEl.textContent=m; await wait(300); }
+  card.classList.remove('battle-shake');
+  const resultHtml = isDraw ? `<div class="result draw">🤝 무승부!</div>`
+    : resultWinnerName ? `<div class="result ${win?'win':'lose'}">${win?'🏆':'💀'} ${resultWinnerName} 승리!</div>`
+    : (win ? `<div class="result win">🏆 승리!</div>` : `<div class="result lose">💀 패배...</div>`);
+  card.innerHTML = titleHtml + resultHtml;
+  await wait(700);
+  wrap.classList.remove('show');
+}
+
+/* ================= Combat (투입 시스템) ================= */
+function askCommitUI(player, enemy, isBoss, guaranteed=false){
+  return new Promise(resolve=>{
+    state.pendingCombat = { enemy, isBoss, commitDraft:0, resolve, guaranteed };
+    state.phase='EVENT';
+    render();
+  });
+}
+function adjustCommit(delta){
+  const pc=state.pendingCombat; if(!pc) return;
+  const p=state.players[state.turn];
+  pc.commitDraft = Math.max(0, Math.min(p.honey, pc.commitDraft+delta));
+  render();
+}
+function setCommitMax(){ const pc=state.pendingCombat; if(!pc) return; pc.commitDraft = state.players[state.turn].honey; render(); }
+function setCommitZero(){ const pc=state.pendingCombat; if(!pc) return; pc.commitDraft = 0; render(); }
+function confirmCommit(){
+  const pc=state.pendingCombat; if(!pc) return;
+  const commit=pc.commitDraft; state.pendingCombat=null; pc.resolve(commit);
+}
+function retreatCombat(){
+  const pc=state.pendingCombat; if(!pc) return;
+  state.pendingCombat=null; pc.resolve(null);
+}
+function aiDecideCombatAction(ai, enemyPower, isBoss){
+  const maxPossible = ai.honey + 6;
+  if(!isBoss && maxPossible < enemyPower){
+    return {shouldFight:false, commit:0};
+  }
+  const need = isBoss ? (enemyPower-1) : (enemyPower-4);
+  const commit = Math.max(0, Math.min(ai.honey, need));
+  if(!isBoss){
+    const safeWin = commit+4 >= enemyPower;
+    if(!safeWin && ai.honey>0 && commit > ai.honey*0.6){
+      return {shouldFight:false, commit:0};
+    }
+  }
+  return {shouldFight:true, commit};
+}
+
+async function runCombatFlow(player, enemy, isBoss){
+  const guaranteed = !isBoss && enemy.power < player.honey;
+  let commit = 0;
+
+  if(player.isAI){
+    if(guaranteed){
+      showPopup(`🤖 <b>${player.name}</b>: 허니가 더 높아 손쉽게 승리!`, 850);
+      await wait(700);
+    } else {
+      const decision = aiDecideCombatAction(player, enemy.power, isBoss);
+      if(!decision.shouldFight){
+        log(`🤖 ${player.name}: ${enemy.icon} ${enemy.name}은(는) 승산이 낮아 전투를 포기했습니다.`);
+        showPopup(`🤖 <b>${player.name}</b>: 승산이 낮아 후퇴!`, 900);
+        await wait(700);
+        state.phase='END'; render();
+        return;
+      }
+      commit = decision.commit;
+      showPopup(`🤖 <b>${player.name}</b>: 허니 ${commit} 투입!`, 850);
+      await wait(700);
+    }
+  } else {
+    showPopup(`⚔️ <b>${enemy.name}</b>와(과) 전투!! (파워 ${enemy.power})`, 900);
+    await wait(600);
+    const resolved = await askCommitUI(player, enemy, isBoss, guaranteed);
+    if(resolved===null){ log(`🏃 ${player.name}: 전투를 포기했습니다.`); state.phase='END'; render(); return; }
+    commit = guaranteed ? 0 : resolved;
+  }
+
+  state.animating=true; render();
+  let die=0, jellyBonus=0, orionBonus=0;
+  if(!guaranteed){
+    die = await animateSingleDie(player);
+    if(player.jellyArmed){ jellyBonus=2; player.jellyArmed=false; log(`🍼 ${player.name}: 로열젤리 발동! +2`); }
+    if(isBoss && player.orionCharmArmed){ orionBonus=3; player.orionCharmArmed=false; log(`🔯 ${player.name}: 오리온의 인장 발동! +3`); }
+  }
+  const power = guaranteed ? player.honey : (commit + die + jellyBonus + orionBonus);
+  const win = guaranteed || (isBoss ? power > enemy.power : power >= enemy.power);
+  await showBattleAnimation(player, enemy.icon, power, enemy.power, win, enemy.name, false, `⚔️ ${enemy.name}와(과) 전투!!`);
+
+  if(win){
+    if(guaranteed){
+      addGold(player, enemy.power);
+      log(`⚔️ ${player.name}이(가) ${enemy.icon} ${enemy.name}(파워${enemy.power})을(를) 손쉽게 물리쳤다! (보유 허니 ${player.honey}가 더 높음, 투입 불필요) → 골드 +${enemy.power}G`);
+    } else if(enemy.power < player.honey){
+      addGold(player, enemy.power);
+      log(`⚔️ ${player.name}이(가) ${enemy.icon} ${enemy.name}(파워${enemy.power})을(를) 물리쳤다! (허니${commit}+주사위${die}${jellyBonus?'+젤리2':''}=${power}) → 골드 +${enemy.power}G`);
+    } else {
+      addHoney(player, enemy.power);
+      log(`⚔️ ${player.name}이(가) ${enemy.icon} ${enemy.name}(파워${enemy.power})을(를) 물리쳤다! (허니${commit}+주사위${die}${jellyBonus?'+젤리2':''}=${power}) → 허니 +${enemy.power}`);
+    }
+  } else {
+    if(player.shieldArmed){
+      player.shieldArmed=false;
+      log(`🛡️ ${player.name}의 보호막이 발동! 허니 손실 없음`);
+      showPopup(`🛡️ <b>${player.name}</b>: 보호막 발동!`, 1000);
+    } else {
+      const lossAmt = Math.floor(player.honey*MONSTER_LOSS_PCT);
+      const before = player.honey;
+      addHoney(player,-lossAmt);
+      log(`💀 ${player.name}이(가) ${enemy.icon} ${enemy.name}에게 패배... 보유 허니의 30%인 ${lossAmt} 손실 (허니 ${before}→${player.honey})`);
+    }
+  }
+  state.animating=false;
+  state.phase='END';
+  render();
+}
+
+async function doPvP(attacker, defender){
+  const atkHoney = attacker.honey, defHoney = defender.honey;
+  showPopup(`⚔️ <b>${attacker.name}</b>와(과) <b>${defender.name}</b>이(가) 마주쳤다! (허니 ${atkHoney} vs ${defHoney})`, 1200);
+  await wait(900);
+  state.animating=true; render();
+  const win = atkHoney > defHoney;
+  const isDraw = atkHoney === defHoney;
+  const winnerName = isDraw ? null : (win ? attacker.name : defender.name);
+  const loserName = isDraw ? null : (win ? defender.name : attacker.name);
+  await showBattleAnimation(attacker, avatarFor(defender), atkHoney, defHoney, win, defender.name, isDraw, `⚔️ ${defender.name}와(과) PvP 대결!!`, winnerName);
+
+  if(isDraw){
+    log(`🤝 PvP 무승부! ${attacker.name} vs ${defender.name} (허니 둘 다 ${atkHoney}) 허니 변동 없음`);
+  } else if(win){
+    const steal = Math.min(PVP_STEAL, defHoney);
+    addHoney(defender, -steal); addHoney(attacker, steal);
+    log(`⚔️ PvP 결과: ${winnerName} 승리! (허니 ${atkHoney} vs ${defHoney}) 패자 ${loserName}의 허니 ${steal} 빼앗음 → ${attacker.name} 허니 ${attacker.honey} / ${defender.name} 허니 ${defender.honey}`);
+  } else {
+    const steal = Math.min(PVP_STEAL, atkHoney);
+    addHoney(attacker, -steal); addHoney(defender, steal);
+    log(`⚔️ PvP 결과: ${winnerName} 승리! (허니 ${atkHoney} vs ${defHoney}) 패자 ${loserName}의 허니 ${steal} 빼앗음 → ${attacker.name} 허니 ${attacker.honey} / ${defender.name} 허니 ${defender.honey}`);
+  }
+  state.animating=false; state.phase='END'; render();
+}
+
+/* ================= Tile resolution ================= */
+async function resolveTile(player){
+  if(state.gameOver) return;
+  const opp = other(player);
+  if(player.ring!==0 && opp.ring===player.ring && opp.pos===player.pos){
+    await doPvP(player, opp);
+    if(state.gameOver) return;
+  }
+  const tile = curTile(player);
+  if(player.isAI){ await aiHandleTile(player, tile); return; }
+
+  switch(tile.t){
+    case 'honey': {
+      const g = RINGS[player.ring].gain;
+      addHoney(player, g);
+      log(`🍯 ${player.name}: 허니 웅덩이에서 +${g} (링${player.ring})`);
+      showPopup(`🍯 <b>${player.name}</b>: 허니 +${g}`, 1000);
+      state.phase='END'; break;
+    }
+    case 'trap': {
+      state.pendingTrap = true;
+      state.phase='EVENT'; break;
+    }
+    case 'gold': {
+      addGold(player, tile.amount);
+      log(`💰 ${player.name}: 돈 주머니에서 +${tile.amount}G (링${player.ring})`);
+      showPopup(`💰 <b>${player.name}</b>: 골드 +${tile.amount}`, 1000);
+      state.phase='END'; break;
+    }
+    case 'monster': {
+      await runCombatFlow(player, {name:tile.label, icon:tile.icon, power:tile.power}, false);
+      return;
+    }
+    case 'shop':
+      state.pendingShop = {secret:false};
+      state.phase='EVENT'; break;
+    case 'secretshop':
+      state.pendingShop = {secret:true};
+      state.phase='EVENT'; break;
+    case 'portal':
+      state.pendingPortal = true;
+      state.phase='EVENT'; break;
+    case 'island': {
+      player.skipTurns = (player.skipTurns||0) + 2;
+      log(`🏝️ ${player.name}: 무인도에 떨어졌다! 2턴간 휴식...`);
+      showPopup(`🏝️ <b>${player.name}</b>: 무인도 표류! 2턴 휴식`, 1300);
+      state.phase='END'; break;
+    }
+    default:
+      state.phase='END';
+  }
+  render();
+}
+
+function usePortal(targetRing){
+  const p = state.players[state.turn];
+  const fromRing = p.ring;
+  p.ring = targetRing; p.pos = 1;
+  log(`🌌 ${p.name}: 차원문을 통해 링${fromRing}→링${targetRing}(으)로 순간이동!`);
+  showPopup(`🌌 <b>${p.name}</b>: 차원문 이동! → 링${targetRing}`, 1100);
+  state.pendingPortal = false;
+  state.phase = 'END';
+  render();
+}
+
+async function rollTrap(){
+  const player = state.players[state.turn];
+  state.pendingTrap = false;
+  const die = await animateSingleDie(player, '트랩 회피 판정');
+  if(die>=4){ log(`🪤 ${player.name}: 트랩 회피 성공! (주사위 ${die})`); showPopup(`🪤 <b>${player.name}</b>: 회피 성공!`, 1000); }
+  else { addHoney(player,-TRAP_PENALTY); log(`🪤 ${player.name}: 트랩 회피 실패 (주사위 ${die}) → 허니 -${TRAP_PENALTY}`); showPopup(`🪤 <b>${player.name}</b>: 회피 실패! 허니 -${TRAP_PENALTY}`, 1100); }
+  state.phase='END'; render();
+}
+
+async function aiHandleTile(ai, tile){
+  const say = async (m)=>{ log(`🤖 ${m}`); showPopup(`🤖 ${m}`, 800); await wait(650); };
+  if(tile.t==='honey'){ const g=RINGS[ai.ring].gain; addHoney(ai,g); await say(`${ai.name}: 허니 웅덩이에서 +${g}`); }
+  else if(tile.t==='gold'){ addGold(ai,tile.amount); await say(`${ai.name}: 돈 주머니에서 +${tile.amount}G`); }
+  else if(tile.t==='trap'){
+    const die = await animateSingleDie(ai, '트랩 회피 판정');
+    if(die>=4){ await say(`${ai.name}: 트랩 회피 성공! (${die})`); }
+    else { addHoney(ai,-TRAP_PENALTY); await say(`${ai.name}: 트랩 회피 실패, 허니 -${TRAP_PENALTY}`); }
+  } else if(tile.t==='monster'){
+    await runCombatFlow(ai, {name:tile.label, icon:tile.icon, power:tile.power}, false);
+    if(state.gameOver) return;
+  } else if(tile.t==='shop'){
+    const owned = new Set(ai.items.map(it=>it.id));
+    const affordable = ITEM_DB.filter(it=>ai.gold>=it.price && !owned.has(it.id));
+    if(affordable.length && ai.items.length<MAX_ITEM_SLOTS){
+      const pick = affordable[rand(0,affordable.length-1)];
+      addGold(ai,-pick.price); ai.items.push(pick);
+      await say(`${ai.name}: 아이템 상점에서 [${pick.name}] 구매.`);
+    } else await say(`${ai.name}: 아이템 상점, 구매 안함.`);
+  } else if(tile.t==='secretshop'){
+    const owned = new Set(ai.items.map(it=>it.id));
+    if(ai.gold>=50){ addGold(ai,-50); addHoney(ai,20); await say(`${ai.name}: 비밀 상점에서 [허니 영약] 구매! 허니 +20`); }
+    else if(ai.gold>=30 && !owned.has('orioncharm') && ai.items.length<MAX_ITEM_SLOTS){ addGold(ai,-30); ai.items.push(itemById('orioncharm')); await say(`${ai.name}: 비밀 상점에서 [오리온의 인장] 구매.`); }
+    else await say(`${ai.name}: 비밀 상점, 구매 안함.`);
+  } else if(tile.t==='portal'){
+    const otherRings = [1,2,3].filter(r=>r!==ai.ring);
+    const target = otherRings[rand(0,otherRings.length-1)];
+    ai.ring = target; ai.pos = 1;
+    await say(`${ai.name}: 차원문으로 링${target}(으)로 이동!`);
+  } else if(tile.t==='island'){
+    ai.skipTurns = (ai.skipTurns||0) + 2;
+    await say(`${ai.name}: 무인도에 떨어져 2턴간 휴식...`);
+  }
+  if(state.gameOver) return;
+  const shieldIdx = ai.items.findIndex(i=>i.id==='shield');
+  if(shieldIdx>=0 && !ai.shieldArmed){ ai.shieldArmed=true; ai.items.splice(shieldIdx,1); await say(`${ai.name}: 보호막 장착!`); }
+  render();
+  await wait(300);
+  state.phase='END';
+  endTurn();
+}
+
+async function doOrion(player){
+  const title = `⚔️ ${ORION.name}와(과) 전투!!`;
+  if(player.isAI){
+    state.animating=true; render();
+    const decision = aiDecideCombatAction(player, ORION_POWER, true);
+    const commit = decision.commit;
+    showPopup(`🤖 <b>${player.name}</b>: 오리온에게 허니 ${commit} 투입!`, 900);
+    await wait(750);
+    const die = await animateSingleDie(player);
+    let jellyBonus=0, orionBonus=0;
+    if(player.jellyArmed){ jellyBonus=2; player.jellyArmed=false; }
+    if(player.orionCharmArmed){ orionBonus=3; player.orionCharmArmed=false; log(`🔯 ${player.name}: 오리온의 인장 발동! +3`); }
+    const power = commit+die+jellyBonus+orionBonus;
+    const win = power > ORION_POWER;
+    await showBattleAnimation(player, ORION.icon, power, ORION_POWER, win, ORION.name, false, title);
+    if(win){ victory(player); return; }
+    if(player.shieldArmed){ player.shieldArmed=false; log(`🛡️ ${player.name}의 보호막 발동!`); }
+    else if(commit>0){ addHoney(player,-commit); log(`💀 ${player.name}이(가) 오리온에게 패배... 허니 ${commit} 소멸`); }
+    player.ring=3; player.pos=0;
+    checkDemotion(player);
+    if(player.ring===3) log(`🌀 ${player.name}: 링3 출발점으로 되돌아갑니다.`);
+    state.animating=false; state.phase='ROLL'; render();
+    await wait(300); endTurn();
+    return;
+  }
+  showPopup(`👾 <b>${ORION.name}</b> 등장! (파워 ${ORION_POWER})`, 1000);
+  await wait(650);
+  const commit = await askCommitUI(player, ORION, true);
+  if(commit===null){ log(`🏃 ${player.name}: 오리온 도전을 미룹니다.`); state.phase='END'; render(); return; }
+  state.animating=true; render();
+  const die = await animateSingleDie(player);
+  let jellyBonus=0, orionBonus=0;
+  if(player.jellyArmed){ jellyBonus=2; player.jellyArmed=false; log(`🍼 로열젤리 발동! +2`); }
+  if(player.orionCharmArmed){ orionBonus=3; player.orionCharmArmed=false; log(`🔯 오리온의 인장 발동! +3`); }
+  const power = commit+die+jellyBonus+orionBonus;
+  const win = power > ORION_POWER;
+  await showBattleAnimation(player, ORION.icon, power, ORION_POWER, win, ORION.name, false, title);
+  if(win){ victory(player); return; }
+  if(player.shieldArmed){ player.shieldArmed=false; log(`🛡️ ${player.name}의 보호막 발동! 손실 없음`); }
+  else if(commit>0){ addHoney(player,-commit); log(`💀 ${player.name}이(가) 오리온에게 패배... 허니 ${commit} 소멸`); }
+  else { log(`💀 ${player.name}이(가) 오리온에게 패배... (투입 0)`); }
+  player.ring=3; player.pos=0;
+  checkDemotion(player);
+  if(player.ring===3) log(`🌀 ${player.name}: 링3 출발점으로 되돌아갑니다.`);
+  state.animating=false; state.phase='END'; render();
+}
+
+/* ================= Turn flow ================= */
+async function performRoll(){
+  if(state.animating||state.gameOver) return;
+  const player = state.players[state.turn];
+  if(player.ring===0){ await doOrion(player); return; }
+  state.animating=true; render();
+  const die = await animateSingleDie(player);
+  state.lastDie = die;
+  let mult=1;
+  if(player.hasteArmed){ mult=2; player.hasteArmed=false; log(`👟 ${player.name}: 축지법 발동! 이동거리 2배`); showPopup(`👟 <b>${player.name}</b>: 축지법! 이동 2배`, 900); await wait(550); }
+  const steps = die*mult;
+  let reachedCenter=false;
+  for(let s=0;s<steps;s++){
+    const def = RINGS[player.ring];
+    player.pos = (player.pos+1) % def.size;
+    if(player.pos===0 && player.honey>=def.gate){
+      if(player.ring<3){
+        const fromRing = player.ring;
+        player.ring += 1; player.pos = 0;
+        log(`🚪 ${player.name}: 허니 조건(${def.gate}) 달성으로 링${fromRing}→링${player.ring} 승급했습니다!`);
+        showPopup(`🚪 <b>${player.name}</b>: 조건 달성! 링${player.ring} 승급!`, 1200);
+        render(); await wait(400);
+      } else {
+        player.ring = 0;
+        log(`✨ ${player.name}: 허니 조건(${def.gate}) 달성으로 차원의 심장(오리온)에 도달했습니다!`);
+        showPopup(`✨ <b>${player.name}</b>: 차원의 심장 도달!`, 1300);
+        reachedCenter=true;
+        render(); await wait(500);
+        break;
+      }
+    }
+    render();
+    await wait(140);
+  }
+  if(!reachedCenter){
+    const landedEl = document.getElementById(`tile-${player.ring}-${player.pos}`);
+    if(landedEl){ landedEl.classList.add('landed-flash'); setTimeout(()=>landedEl.classList.remove('landed-flash'),700*PACE); }
+  }
+  log(`🎲 ${player.name}: 주사위 ${die}${mult===2?' ×2':''} → ${steps}칸 이동`);
+  state.animating=false;
+  if(reachedCenter){
+    state.phase='ROLL';
+    render();
+    if(player.isAI){ await doOrion(player); }
+    return;
+  }
+  await resolveTile(player);
+}
+
+function endTurn(){
+  state.pendingShop=null; state.pendingCombat=null; state.selectMode=null; state.pendingTrap=false; state.pendingPortal=false;
+  state.turn = 1-state.turn; state.phase='ROLL';
+  const next = state.players[state.turn];
+  if(next.skipTurns>0 && !state.gameOver){
+    next.skipTurns--;
+    log(`🏝️ ${next.name}: 무인도에서 휴식 중... (남은 휴식 ${next.skipTurns}턴)`);
+    render();
+    endTurn();
+    return;
+  }
+  const posLabel = next.ring===0 ? '차원의 심장' : `링${next.ring} ${next.pos}번 칸`;
+  log(`--- ${next.name}의 턴 시작 (허니 ${next.honey}, 골드 ${next.gold}, ${posLabel}) ---`);
+  render();
+  if(next.isAI && !state.gameOver){ runAITurn(); }
+}
+async function runAITurn(){
+  const ai = state.players[state.turn];
+  log(`🤖 ${ai.name}이(가) 행동을 생각 중입니다...`);
+  render(); await wait(550);
+  await performRoll();
+}
+
+function victory(player){
+  state.gameOver=true; render();
+  const el = document.getElementById('overlay-card');
+  el.className = 'card victory-glow';
+  el.innerHTML = `<h2>🏆 VICTORY 🏆</h2><p style="font-size:16px;">${player.name}이(가) 디스트로이어 오리온을 물리치고<br>우주 벌꿀을 지켜냈습니다!</p><button class="primary" onclick="location.reload()">다시 하기</button>`;
+  document.getElementById('overlay').style.display='flex';
+}
+
+/* ================= Player actions ================= */
+function pickShopOffers(){ return ITEM_DB.map(i=>i.id); }
+function actItemBuy(itemId){
+  const p = state.players[state.turn];
+  const item = itemById(itemId);
+  if(p.gold<item.price){ log('골드가 부족합니다.'); return; }
+  if(item.instant){
+    addGold(p,-item.price);
+    addHoney(p,20);
+    log(`${p.name}: [${item.name}] 구매! 허니 +20 (${item.price}G)`);
+    showPopup(`🧪 <b>${p.name}</b>: [${item.name}] 구매! 허니 +20`, 1100);
+    render();
+    return;
+  }
+  if(p.items.some(it=>it.id===itemId)){ log('이미 보유한 아이템은 중복 구매할 수 없습니다.'); return; }
+  if(p.items.length>=MAX_ITEM_SLOTS){ log('아이템 슬롯이 가득 찼습니다.'); return; }
+  addGold(p,-item.price); p.items.push(item);
+  log(`${p.name}: [${item.name}] 아이템 구매 (${item.price}G)`);
+  showPopup(`🛍️ <b>${p.name}</b>: [${item.name}] 구매!`, 1100);
+  render();
+}
+function actUseItem(itemId){
+  const p = state.players[state.turn];
+  const idx = p.items.findIndex(i=>i.id===itemId);
+  if(idx<0) return;
+  const item = p.items[idx];
+  if(item.id==='shield'){ p.shieldArmed=true; p.items.splice(idx,1); log(`🛡️ ${p.name}: 보호막 장착!`); showPopup(`🛡️ <b>${p.name}</b>: 보호막 장착!`,1000); }
+  else if(item.id==='jelly'){ p.jellyArmed=true; p.items.splice(idx,1); log(`🍼 ${p.name}: 로열젤리 장착! (다음 전투 +2)`); showPopup(`🍼 <b>${p.name}</b>: 로열젤리 장착!`,1000); }
+  else if(item.id==='orioncharm'){ p.orionCharmArmed=true; p.items.splice(idx,1); log(`🔯 ${p.name}: 오리온의 인장 장착! (오리온 전투 한정 +3)`); showPopup(`🔯 <b>${p.name}</b>: 오리온의 인장 장착!`,1000); }
+  else if(item.id==='haste'){
+    if(state.phase!=='ROLL'){ log('주사위를 굴리기 전에만 사용할 수 있습니다.'); return; }
+    p.hasteArmed=true; p.items.splice(idx,1); log(`👟 ${p.name}: 축지법 준비 완료!`); showPopup(`👟 <b>${p.name}</b>: 축지법 준비!`,900);
+  } else if(item.id==='hook'){
+    const opp = other(p);
+    if(opp.ring!==p.ring){ log('상대가 같은 링에 있지 않습니다.'); return; }
+    if(ringDist(RINGS[p.ring].size, p.pos, opp.pos)>5){ log('상대가 5칸 이내에 있지 않습니다.'); return; }
+    opp.pos = p.pos; p.items.splice(idx,1);
+    log(`⛓️ ${p.name}: 갈고리 사슬로 ${opp.name}을(를) 끌어왔다! 강제 PvP`);
+    showPopup(`⛓️ <b>${p.name}</b>: 갈고리 사슬!`, 900);
+    render();
+    (async ()=>{ await doPvP(p, opp); })();
+    return;
+  } else if(item.id==='teleport'){
+    state.selectMode = {type:'teleport', playerId:p.id, ring:p.ring};
+    p.items.splice(idx,1);
+    showPopup(`🌀 <b>${p.name}</b>: 이동할 칸을 클릭하세요! (링${p.ring})`, 1800);
+  }
+  render();
+}
+function handleTileSelect(ring,pos){
+  const sel = state.selectMode; if(!sel) return;
+  const player = state.players.find(pl=>pl.id===sel.playerId);
+  if(sel.type==='teleport'){
+    if(ring!==sel.ring){ return; }
+    player.pos = pos;
+    state.selectMode=null;
+    log(`🌀 ${player.name}: 순간이동! (링${ring}, ${pos}번 칸)`);
+    render();
+    resolveTile(player);
+  }
+}
+function skipEvent(){
+  showPopup(`🚪 상점에서 나왔습니다.`, 800);
+  state.phase='END'; state.pendingShop=null; render();
+}
+
+/* ================= Rendering ================= */
+const DESIGN_W=690, DESIGN_H=600;
+const CX=345, CY=300;
+const RING_GEOM = {
+  1: {halfW:293, halfH:238},
+  2: {halfW:218, halfH:163},
+  3: {halfW:140, halfH:85},
+};
+/**
+ * 직사각형 둘레에 count개의 칸을 배치한다. 네 모서리(꼭짓점)에는 항상 정확히 1칸씩만 배치하고,
+ * 나머지 칸은 각 변의 길이에 비례해 변 내부(모서리와 겹치지 않는 위치)에 고르게 분배한다.
+ * 단순 호길이 등분 방식은 모서리 근처에서 두 칸이 시각적으로 겹쳐 보이는 문제가 있어 이렇게 분리했다.
+ */
+function rectRingPoints(cx,cy,halfW,halfH,count){
+  const top=halfW*2, side=halfH*2;
+  const corners = [
+    {x:-halfW,y:-halfH}, {x:halfW,y:-halfH}, {x:halfW,y:halfH}, {x:-halfW,y:halfH}
+  ];
+  const segLens = [top, side, top, side];
+  const remaining = Math.max(0, count-4);
+  const totalLen = segLens.reduce((a,b)=>a+b,0);
+  const raw = segLens.map(l=>remaining*l/totalLen);
+  const segCounts = raw.map(Math.floor);
+  let leftover = remaining - segCounts.reduce((a,b)=>a+b,0);
+  const order = raw.map((r,i)=>({i,frac:r-segCounts[i]})).sort((a,b)=>b.frac-a.frac);
+  for(let k=0;k<leftover;k++){ segCounts[order[k].i]++; }
+
+  const pts = [];
+  for(let s=0;s<4;s++){
+    pts.push(corners[s]);
+    const n = segCounts[s];
+    const from = corners[s], to = corners[(s+1)%4];
+    for(let k=1;k<=n;k++){
+      const t = k/(n+1);
+      pts.push({ x: from.x+(to.x-from.x)*t, y: from.y+(to.y-from.y)*t });
+    }
+  }
+  return pts.slice(0,count).map(p=>({x:cx+p.x, y:cy+p.y}));
+}
+function tokenHTML(player, dx, dy){
+  const cls = player.id===1?'tok-p1':'tok-p2';
+  return `<div class="token ${cls}" style="left:calc(50% + ${dx}px - 10px);top:calc(50% + ${dy}px - 10px);" title="${player.name}">${avatarFor(player)}</div>`;
+}
+function tileTip(node, ring){
+  if(node.t==='monster') return `파워 ${node.power}<br>보유 허니가 파워보다 높으면 자동 승리!<br>아니면 투입 허니+주사위가 파워 이상이면 승리`;
+  if(node.t==='shop') return ITEM_DB.map(i=>`${i.icon} ${i.name} - ${i.price}G`).join('<br>');
+  if(node.t==='secretshop') return SECRET_ITEM_DB.map(i=>`${i.icon} ${i.name} - ${i.price}G`).join('<br>');
+  if(node.t==='honey') return `허니 +${RINGS[ring].gain} 획득`;
+  if(node.t==='gold') return `골드 +${node.amount} 획득`;
+  return TIP_BY_TYPE[node.t] || '';
+}
+function fitBoardScale(){
+  const wrap = document.getElementById('board-wrap');
+  const availW = Math.max(180, wrap.clientWidth - 16);
+  const h1El = document.querySelector('h1');
+  const subEl = document.querySelector('.sub');
+  const controlsEl = document.getElementById('controls');
+  const logEl = document.getElementById('log');
+  const chromeH = (h1El?h1El.offsetHeight:0) + (subEl?subEl.offsetHeight:0) + (controlsEl?controlsEl.offsetHeight:0) + (logEl?logEl.offsetHeight:0) + 70;
+  const availH = Math.max(140, window.innerHeight - chromeH);
+  return Math.min(availW/DESIGN_W, availH/DESIGN_H, 1.3);
+}
+function renderBoard(){
+  const board = document.getElementById('board');
+  const scale = fitBoardScale();
+  const vp = document.getElementById('board-viewport');
+  vp.style.width = (DESIGN_W*scale)+'px';
+  vp.style.height = (DESIGN_H*scale)+'px';
+  board.style.width = DESIGN_W+'px';
+  board.style.height = DESIGN_H+'px';
+  board.style.transform = `scale(${scale})`;
+
+  let html = '';
+  const ringNames = {1:'1링',2:'2링',3:'3링'};
+  [1,2,3].forEach(r=>{
+    const g = RING_GEOM[r];
+    html += `<div class="ring-track r${r}" style="left:${CX-g.halfW}px;top:${CY-g.halfH}px;width:${g.halfW*2}px;height:${g.halfH*2}px;"></div>`;
+    html += `<div class="ring-badge r${r}" style="left:${CX-g.halfW+10}px;top:${CY-g.halfH-11}px;">${ringNames[r]}</div>`;
+  });
+
+  const tileSizes = {1:44,2:46,3:50};
+  [1,2,3].forEach(r=>{
+    const def = RINGS[r];
+    const g = RING_GEOM[r];
+    const pts = rectRingPoints(CX,CY,g.halfW,g.halfH,def.size);
+    const ts = tileSizes[r];
+    def.tiles.forEach((tile,i)=>{
+      const pt = pts[i];
+      const isEdgeLeft = pt.x < CX-g.halfW+ts;
+      const isEdgeRight = pt.x > CX+g.halfW-ts;
+      const isEdgeBottom = pt.y > CY+g.halfH-ts;
+      const cls = ['tile', `ring${r}`,
+        tile.t==='monster'?'mzone':'',
+        tile.t==='shop'?'shop':'',
+        tile.t==='secretshop'?'secretshop':'',
+        tile.t==='portal'?'portal':'',
+        tile.t==='island'?'island':'',
+        tile.t==='start'?'start':'',
+        tile.t==='honey'?'honey':'',
+        tile.t==='trap'?'trap':'',
+        tile.t==='gold'?'gold':'',
+        state.selectMode && state.selectMode.ring===r ? 'selectable':'',
+        isEdgeBottom?'edge-bottom':'', isEdgeLeft?'edge-left':'', isEdgeRight?'edge-right':''
+      ].filter(Boolean).join(' ');
+      const tip = tileTip(tile, r);
+      const marks = state.players.filter(p=>p.ring===r && p.pos===i).map((p,mi)=>{
+        const sharedCount = state.players.filter(pp=>pp.ring===r&&pp.pos===i).length;
+        const off = sharedCount>1 ? (mi===0?-9:9) : 0;
+        return tokenHTML(p, off, 0);
+      }).join('');
+      const label = `<div class="tlabel">${tile.label||''}</div>`;
+      html += `<div class="${cls}" id="tile-${r}-${i}" onclick="handleTileSelect(${r},${i})" style="left:${pt.x-ts/2}px;top:${pt.y-ts/2}px;width:${ts}px;height:${ts}px;">${tile.icon}${label}${marks}${tip?`<div class="tip"><b>${tile.icon} ${tile.label||tile.t}</b><br>${tip}</div>`:''}</div>`;
+    });
+  });
+  // Orion center tile
+  const orionMarks = state.players.filter(p=>p.ring===0).map((p,mi)=>tokenHTML(p, mi===0?-9:9, 0)).join('');
+  const orionSize = 64;
+  html += `<div class="tile orion" id="tile-0-0" style="left:${CX-orionSize/2}px;top:${CY-orionSize/2}px;width:${orionSize}px;height:${orionSize}px;font-size:26px;">${ORION.icon}<div class="tlabel" style="color:var(--gold);font-size:9px;">오리온</div>${orionMarks}<div class="tip"><b>${ORION.icon} ${ORION.name}</b><br>파워 ${ORION_POWER} — 투입+주사위가 초과해야 승리<br>승리 시 즉시 게임 승리!<br><br>🔑 도전 방법: 3링에서 허니 ${RINGS[3].gate} 이상 상태로 출발칸을 지나면 자동으로 이곳에 오게 됩니다.</div></div>`;
+
+  board.innerHTML = html;
+}
+
+function renderSide(player, elId){
+  const el = document.getElementById(elId);
+  const isActive = state.players[state.turn].id===player.id && !state.gameOver && state.started;
+  const honeyPct = Math.min(100, Math.round(player.honey/MAX_HONEY*100));
+  const ringLabel = player.ring===0?'차원의 심장':`링 ${player.ring}`;
+  const ringCls = player.ring===0?'r0':`r${player.ring}`;
+  const itemHtml = Array.from({length:MAX_ITEM_SLOTS},(_,i)=>{
+    const it = player.items[i];
+    if(!it) return `<div class="skill-slot empty"></div>`;
+    const usable = !player.isAI;
+    const armed = (it.id==='shield'&&player.shieldArmed)||(it.id==='jelly'&&player.jellyArmed)||(it.id==='haste'&&player.hasteArmed);
+    return `<div class="skill-chip ${armed?'armed':''}"><span class="ico">${it.icon}</span><b>${it.name}</b>
+      ${usable?`<button style="margin-top:5px;padding:2px 7px;font-size:9px" onclick="actUseItem('${it.id}')">사용</button>`:''}
+      <div class="tip"><b>${it.icon} ${it.name}</b><br>${it.desc}</div>
+    </div>`;
+  }).join('');
+  el.className = `side ${player.id===1?'p1':'p2'} ${isActive?'active-turn':''}`;
+  el.innerHTML = `
+    <div class="avatar-box"><div class="avatar">${avatarFor(player)}</div>
+      <div class="pname">${player.name}${player.character?` · ${CHARACTERS[player.character].name}`:''}</div>
+      <div class="ring-tag ${ringCls}">${ringLabel}</div>
+    </div>
+    <div class="stat-row"><span>HONEY 🍯</span><span>${player.honey}</span></div>
+    <div class="honey-wrap"><div class="honey-bar"><div class="honey-fill" style="width:${honeyPct}%"></div></div>
+      <div class="tip"><b>🍯 허니</b><br>전투력의 재료이자 링 승급 조건.<br>오리온을 처치해야 최종 승리!</div>
+    </div>
+    <div class="gold-line">💰 ${player.gold} G<div class="tip"><b>💰 골드</b><br>아이템 구매 전용 화폐</div></div>
+    <div class="skills-title">ITEMS ${player.items.length}/${MAX_ITEM_SLOTS}<div class="tip">아이템은 상점에서 구매,<br>보유칸은 누구나 ${MAX_ITEM_SLOTS}칸 고정</div></div>
+    <div class="skill-slots">${itemHtml}</div>
+  `;
+}
+
+function renderLog(){ document.getElementById('log').innerHTML = state.logHistory.map(m=>`<div>${m}</div>`).join(''); }
+
+function renderControls(){
+  const el = document.getElementById('controls');
+  let mainHtml = '';
+  if(!state.started){ mainHtml = `<div style="text-align:center;color:var(--dim)">게임을 시작해주세요</div>`; }
+  else if(state.gameOver){ mainHtml = `<div style="text-align:center;color:var(--dim)">게임 종료</div>`; }
+  else {
+    const p = state.players[state.turn];
+    if(state.animating){ mainHtml = `<div class="thinking">⏳ 진행 중...</div>`; }
+    else if(p.isAI){ mainHtml = `<div class="thinking">🤖 AI가 행동을 생각 중입니다...</div>`; }
+    else {
+      let html = `<div class="msg-turn">${p.name}의 턴</div>`;
+      if(state.selectMode){
+        html += `<div style="color:var(--dim);">🌀 이동할 칸을 보드에서 클릭하세요.</div>`;
+      } else if(p.ring===0 && state.phase!=='EVENT'){
+        html += `<div class="row"><button class="danger" onclick="performRoll()">👾 오리온에게 도전</button></div>`;
+      } else if(state.pendingCombat){
+        const pc = state.pendingCombat;
+        html += `<div>상대: <b>${pc.enemy.icon} ${pc.enemy.name}</b> (파워 ${pc.enemy.power})</div>`;
+        if(pc.guaranteed){
+          html += `<div class="encounter-box">
+            <div style="color:var(--good);font-weight:700;">✅ 보유 허니(${p.honey})가 상대 파워(${pc.enemy.power})보다 높아 투입 없이 승리합니다!</div>
+            <div class="row"><button class="primary" onclick="confirmCommit()">⚔️ 전투 시작</button></div>
+          </div>`;
+        } else {
+          html += `<div class="encounter-box">
+            <div>투입할 허니 (보유 ${p.honey})</div>
+            <div class="commit-row">
+              <button onclick="adjustCommit(-1)">−1</button>
+              <div class="commit-num">${pc.commitDraft}</div>
+              <button onclick="adjustCommit(1)">+1</button>
+              <button onclick="setCommitZero()">0</button>
+              <button onclick="setCommitMax()">MAX</button>
+            </div>
+            <div style="font-size:11px;color:var(--dim);margin-top:6px;">예상 전투력: 투입 ${pc.commitDraft} + 주사위(1~6) = ${pc.commitDraft+1}~${pc.commitDraft+6}</div>
+            <div style="font-size:11px;color:var(--danger);margin-top:4px;">⚠️ 패배 시 보유 허니의 30% 손실${pc.isBoss?' (오리온전은 투입한 허니 전액 손실)':''}</div>
+            <div class="row">
+              <button class="primary" onclick="confirmCommit()">⚔️ 전투 시작</button>
+              <button onclick="retreatCombat()">🏃 후퇴 (손실 없음)</button>
+            </div>
+          </div>`;
+        }
+      } else if(state.phase==='ROLL'){
+        html += `<div class="row"><button class="primary" onclick="performRoll()">🎲 주사위 굴리기 ${p.hasteArmed?'(축지법 적용됨)':''}</button></div>`;
+      } else if(state.phase==='EVENT' && state.pendingTrap){
+        html += `<div>🪤 <b>트랩</b>에 걸렸습니다!</div><div style="font-size:11px;color:var(--dim);margin:4px 0 8px;">주사위 4 이상이면 회피, 3 이하면 허니 -${TRAP_PENALTY}</div>`;
+        html += `<div class="row"><button class="primary" onclick="rollTrap()">🎲 주사위 굴려서 회피 시도</button></div>`;
+      } else if(state.phase==='EVENT' && state.pendingPortal){
+        const otherRings = [1,2,3].filter(r=>r!==p.ring);
+        html += `<div>🌌 <b>차원문</b>에 도착했습니다! 이동할 링을 선택하세요.</div>`;
+        html += `<div class="row">`;
+        otherRings.forEach(r=>{ html += `<button class="primary" onclick="usePortal(${r})">링${r}로 이동</button>`; });
+        html += `</div>`;
+      } else if(state.phase==='EVENT' && state.pendingShop && !state.pendingShop.secret){
+        html += `<div>현재 타일: <b>🛍️ 아이템 상점</b></div><div>`;
+        ITEM_DB.forEach(it=>{
+          const owned = p.items.some(x=>x.id===it.id);
+          const disabled = p.gold<it.price || p.items.length>=MAX_ITEM_SLOTS || owned;
+          html += `<div class="shop-item"><span>${it.icon} <b>${it.name}</b> <span class="badge">${it.desc}</span></span>
+            <button ${disabled?'disabled':''} onclick="actItemBuy('${it.id}')">${owned?'보유중':it.price+'G 구매'}</button></div>`;
+        });
+        html += `</div><div class="row"><button onclick="skipEvent()">나가기</button></div>`;
+      } else if(state.phase==='EVENT' && state.pendingShop && state.pendingShop.secret){
+        html += `<div>현재 타일: <b>🔮 비밀 상점</b></div><div>`;
+        SECRET_ITEM_DB.forEach(it=>{
+          const owned = !it.instant && p.items.some(x=>x.id===it.id);
+          const disabled = p.gold<it.price || (!it.instant && (p.items.length>=MAX_ITEM_SLOTS || owned));
+          html += `<div class="shop-item"><span>${it.icon} <b>${it.name}</b> <span class="badge">${it.desc}</span></span>
+            <button ${disabled?'disabled':''} onclick="actItemBuy('${it.id}')">${owned?'보유중':it.price+'G 구매'}</button></div>`;
+        });
+        html += `</div><div class="row"><button onclick="skipEvent()">나가기</button></div>`;
+      } else if(state.phase==='END'){
+        html += `<div class="row"><button class="primary" onclick="endTurn()">➡️ 턴 종료</button></div>`;
+      }
+
+      const anytimeItems = p.items.filter(it=>['shield','jelly','hook','teleport','orioncharm'].includes(it.id) || (it.id==='haste'&&state.phase==='ROLL'));
+      if(anytimeItems.length && !state.pendingCombat && !state.selectMode && !state.pendingTrap && !state.pendingPortal){
+        html += `<div class="skills-title" style="margin-top:12px">아이템 사용</div><div class="row">`;
+        anytimeItems.forEach(it=>{ html += `<button onclick="actUseItem('${it.id}')">${it.icon} ${it.name}</button>`; });
+        html += `</div>`;
+      }
+      mainHtml = html;
+    }
+  }
+  const itemCodex = ITEM_DB.map(i=>`${i.icon} <b>${i.name}</b> (${i.price}G)<br><span style="color:var(--dim)">${i.desc}</span>`).join('<br>')
+    + '<br><br><b>🔮 비밀 상점 전용</b><br>' + SECRET_ITEM_DB.map(i=>`${i.icon} <b>${i.name}</b> (${i.price}G)<br><span style="color:var(--dim)">${i.desc}</span>`).join('<br>');
+  el.innerHTML = `<div class="controls-flex">
+    <div class="controls-main">${mainHtml}</div>
+    <div class="controls-codex">
+      <div class="codex-btn">🎒 아이템 도감<div class="tip codex-tip"><b>🎒 아이템 목록</b><br>${itemCodex}</div></div>
+      <div class="codex-btn">📖 규칙 요약<div class="tip codex-tip"><b>📖 핵심 규칙</b><br>
+        <b>승리 조건:</b> 디스트로이어 오리온 처치 (유일한 승리 조건)<br><br>
+        <b>몬스터 전투:</b> 보유 허니가 적 파워보다 높으면 투입 없이 자동 승리(골드 획득). 아니면 전투력=투입 허니+주사위, 적 파워 이상이면 승리(허니 획득). 패배 시 보유 허니의 30% 손실.<br><br>
+        <b>오리온전:</b> 전투력=투입 허니+주사위, 적 파워를 초과해야 승리. 패배 시 투입한 허니 전액 손실 후 3링으로 귀환.<br><br>
+        <b>PvP:</b> 같은 칸에서 마주치면 즉시 대결. 보유 허니가 많은 쪽이 승리(허니 5 획득), 적은 쪽이 패배(허니 5 손실), 같으면 무승부(변동 없음). 별도 투입/주사위 없음.<br><br>
+        <b>게이트:</b> 출발칸을 허니 조건(10/20/30) 충족 상태로 통과하면 자동 승급. 반대로 패배 등으로 허니가 하위 링 조건 밑으로 떨어지면 해당 링으로 자동 강등.<br><br>
+        <b>트랩:</b> 클릭 후 주사위 4+ 회피, 3- 실패 시 허니 -3.<br><br>
+        <b>차원문:</b> 각 링의 출발 바로 다음 칸. 도착 시 다른 두 링의 차원문으로 즉시 이동 선택.<br><br>
+        <b>무인도:</b> 도착 시 2턴간 행동 불가(휴식).</div></div>
+    </div>
+  </div>`;
+}
+
+function flushFx(){
+  if(!state.fxQueue.length) return;
+  const queue = state.fxQueue; state.fxQueue=[];
+  queue.forEach(f=>{
+    const panel = document.getElementById(f.playerId===1?'panel-p1':'panel-p2');
+    if(!panel) return;
+    let target = f.stat==='gold' ? panel.querySelector('.gold-line') : panel.querySelector('.honey-wrap');
+    if(!target) return;
+    const span = document.createElement('div');
+    span.className = 'float-fx ' + (f.amount>=0?'pos':'neg');
+    span.textContent = (f.amount>=0?'+':'') + f.amount + (f.stat==='gold'?'G':'');
+    target.style.position='relative';
+    target.appendChild(span);
+    setTimeout(()=>span.remove(), 1000);
+  });
+}
+
+function render(){
+  renderSide(state.players[0], 'panel-p1');
+  renderSide(state.players[1], 'panel-p2');
+  renderControls();
+  renderLog();
+  renderBoard();
+  flushFx();
+}
+
+/* ================= Start / character select ================= */
+function showStartScreen(){
+  const el = document.getElementById('overlay-card');
+  el.className = 'card';
+  el.innerHTML = `
+    <h2>🍯 허니뱅의 우주 참교육 대모험 🍯</h2>
+    <p style="color:var(--dim); margin:10px 0 22px; font-size:13px; max-width:380px;">오리온 결계를 뚫고 우주 벌꿀을 지켜라!<br>디스트로이어 오리온을 처치해야 승리!</p>
+    <button class="primary" style="font-size:15px;padding:13px 28px;" onclick="showCharSelect()">🎮 게임 시작</button>
+  `;
+  document.getElementById('overlay').style.display='flex';
+}
+function showCharSelect(){
+  const el = document.getElementById('overlay-card');
+  el.className = 'card';
+  const cards = Object.keys(CHARACTERS).map(key=>{
+    const c = CHARACTERS[key];
+    return `<div class="char-card" onclick="startGame('${key}')">
+      <div class="cico">${c.base}</div><div class="cname">${c.name}</div><div class="cdesc">${c.desc}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<h2 style="font-size:18px;">캐릭터를 선택하세요</h2><div class="char-grid">${cards}</div>`;
+  document.getElementById('overlay').style.display='flex';
+}
+function tryFullscreen(){
+  const el = document.documentElement;
+  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+  if(req){ try{ req.call(el).catch(()=>{}); }catch(e){} }
+}
+function startGame(character){
+  tryFullscreen();
+  const pool = Object.keys(CHARACTERS).filter(k=>k!==character);
+  const aiChar = pool[rand(0,pool.length-1)];
+  state.players[0].character = character;
+  state.players[1].character = aiChar;
+  state.started = true;
+  document.getElementById('overlay').style.display='none';
+  log(`게임을 시작합니다! ${CHARACTERS[character].name}(Player 1) vs ${CHARACTERS[aiChar].name}(AI Rival)`);
+  render();
+}
+
+/* ================= Touch support (tap to show tooltips) ================= */
+document.addEventListener('click', (e)=>{
+  if(e.target.closest('[onclick]') && e.target.closest('.tile')) return;
+  const tipHost = e.target.closest('.skill-chip, .honey-wrap, .gold-line, .skills-title, .codex-btn');
+  document.querySelectorAll('.show-tip').forEach(elx=>{ if(elx!==tipHost) elx.classList.remove('show-tip'); });
+  if(tipHost && !e.target.closest('button')){ tipHost.classList.toggle('show-tip'); }
+});
+
+let resizeTimer=null;
+function scheduleResize(){ clearTimeout(resizeTimer); resizeTimer=setTimeout(renderBoard, 60); }
+window.addEventListener('resize', scheduleResize);
+window.addEventListener('orientationchange', ()=>setTimeout(renderBoard,200));
+if(window.ResizeObserver){ new ResizeObserver(scheduleResize).observe(document.getElementById('board-wrap')); }
+
+/* ================= Init ================= */
+render();
+showStartScreen();
+</script>
+</body>
+</html>
